@@ -1,0 +1,24 @@
+{
+    "name": "flypack/flypack",
+    "description": "PHP Fly Package.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roman Rozinko",
+            "email": "r.rozinko@gmail.com"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/flypack/flypack"
+    },
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "~5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "fly\\": "src/"
+        }
+    }
+}
