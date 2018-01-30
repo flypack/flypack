@@ -7,8 +7,6 @@
 
 namespace fly\helpers\tests;
 
-require_once __DIR__ . '/../../src/helpers/FileHelper.php';
-
 use fly\helpers\FileHelper;
 
 /**
