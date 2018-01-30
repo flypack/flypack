@@ -1,18 +1,16 @@
 <?php
 
 /**
+ * FileHelper
+ *
  * @copyright Copyright (c) 2017 Roman Rozinko
  * @license   MIT License
+ *
+ * @author    Roman Rozinko <r.rozinko@gmail.com>
+ * @since     0.1
  */
 
 namespace fly\helpers;
-
-/**
- * FileHelper
- *
- * @author Roman Rozinko <r.rozinko@gmail.com>
- * @since  0.1
- */
 
 class FileHelper
 {

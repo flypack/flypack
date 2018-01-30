@@ -1,8 +1,13 @@
 <?php
 
 /**
+ * Route
+ *
  * @copyright Copyright (c) 2017 Roman Rozinko
  * @license   MIT License
+ *
+ * @author    Roman Rozinko <r.rozinko@gmail.com>
+ * @since     0.2
  */
 
 namespace fly;
@@ -10,12 +15,6 @@ namespace fly;
 use fly\helpers\ArrayHelper;
 use fly\helpers\FileHelper;
 
-/**
- * Route
- *
- * @author Roman Rozinko <r.rozinko@gmail.com>
- * @since  0.2
- */
 class Route
 {
 
