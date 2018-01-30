@@ -14,7 +14,7 @@ namespace fly\helpers\tests;
 
 use fly\helpers\ArrayHelper;
 
-class ArrayHelperTest extends \PHPUnit_Framework_TestCase
+class ArrayHelperTest extends \PHPUnit\Framework\TestCase
 {
 
     /* test ArrayHelper::isArray() */

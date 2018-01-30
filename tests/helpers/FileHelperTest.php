@@ -14,7 +14,7 @@ namespace fly\helpers\tests;
 
 use fly\helpers\FileHelper;
 
-class FileHelperTest extends \PHPUnit_Framework_TestCase
+class FileHelperTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
