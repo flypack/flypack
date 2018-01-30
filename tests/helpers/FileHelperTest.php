@@ -63,13 +63,13 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(__DIR__, TRUE),
-            array(__DIR__ . '/sample', TRUE),
-            array(__DIR__ . '/sample/', TRUE),
-            array(__DIR__ . '/sample/../sample', TRUE),
-            array(__DIR__ . '/sample/../sample/file-helper', TRUE),
-            array(__DIR__ . '/sample-no-exists', FALSE),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', TRUE),
-            array(__DIR__ . '/sample/file-helper/sample-one-no-exist.txt', FALSE),
+            array(__DIR__ . '/../samples', TRUE),
+            array(__DIR__ . '/../samples/', TRUE),
+            array(__DIR__ . '/../samples/../samples', TRUE),
+            array(__DIR__ . '/../samples/../samples/helpers/file-helper', TRUE),
+            array(__DIR__ . '/../samples/sample-no-exists', FALSE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', TRUE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one-no-exist.txt', FALSE),
         );
     }
 
@@ -124,13 +124,13 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(__DIR__, FALSE),
-            array(__DIR__ . '/sample', FALSE),
-            array(__DIR__ . '/sample/', FALSE),
-            array(__DIR__ . '/sample/../sample', FALSE),
-            array(__DIR__ . '/sample/../sample/file-helper', FALSE),
-            array(__DIR__ . '/sample-no-exists', FALSE),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', TRUE),
-            array(__DIR__ . '/sample/file-helper/sample-one-no-exist.txt', FALSE),
+            array(__DIR__ . '/../samples', FALSE),
+            array(__DIR__ . '/../samples/', FALSE),
+            array(__DIR__ . '/../samples/../samples', FALSE),
+            array(__DIR__ . '/../samples/../samples/helpers/file-helper', FALSE),
+            array(__DIR__ . '/../samples/sample-no-exists', FALSE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', TRUE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one-no-exist.txt', FALSE),
         );
     }
 
@@ -157,13 +157,13 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(__DIR__, TRUE),
-            array(__DIR__ . '/sample', TRUE),
-            array(__DIR__ . '/sample/', TRUE),
-            array(__DIR__ . '/sample/../sample', TRUE),
-            array(__DIR__ . '/sample/../sample/file-helper', TRUE),
-            array(__DIR__ . '/sample-no-exists', FALSE),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', FALSE),
-            array(__DIR__ . '/sample/file-helper/sample-one-no-exist.txt', FALSE),
+            array(__DIR__ . '/../samples', TRUE),
+            array(__DIR__ . '/../samples/', TRUE),
+            array(__DIR__ . '/../samples/../samples', TRUE),
+            array(__DIR__ . '/../samples/../samples/helpers/file-helper', TRUE),
+            array(__DIR__ . '/../samples/sample-no-exists', FALSE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', FALSE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one-no-exist.txt', FALSE),
             array('123', FALSE),
         );
     }
@@ -192,9 +192,9 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(__DIR__, FALSE, ''),
-            array(__DIR__ . '/sample/file-helper/sample-one-no-exists.txt', FALSE, ''),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', TRUE, 'some content one'),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', FALSE, 'some content one'),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one-no-exists.txt', FALSE, ''),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', TRUE, 'some content one'),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', FALSE, 'some content one'),
         );
     }
 
@@ -219,8 +219,8 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(__DIR__, TRUE),
-            array(__DIR__ . '/sample/file-helper/sample-one.txt', 1),
-            array(__DIR__ . '/sample/file-helper/sample-one-no-exists.txt', TRUE),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one.txt', 1),
+            array(__DIR__ . '/../samples/helpers/file-helper/sample-one-no-exists.txt', TRUE),
         );
     }
 
@@ -254,27 +254,27 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
             array(array('no.txt', 'no.txt', 'no.txt'), FALSE, ' + ', ' +  + '),
 
             array(array(
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-two.txt'
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-two.txt'
             ), TRUE, '', 'some content onefile two'),
 
             array(array(
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-two.txt'
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-two.txt'
             ), TRUE, ' / ', 'some content one / file two'),
 
             array(array(
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-two.txt',
-                __DIR__ . '/sample/file-helper/sample-three.txt'
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-two.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-three.txt'
             ), TRUE, ' / ', 'some content one / file two / hello
 world'),
 
             array(array(
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-no-exists.txt',
-                __DIR__ . '/sample/file-helper/sample-two.txt',
-                __DIR__ . '/sample/file-helper/sample-no-exists.txt'
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-no-exists.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-two.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-no-exists.txt'
             ), FALSE, ' / ', 'some content one /  / file two / ')
 
         );
@@ -303,9 +303,9 @@ world'),
             array(__DIR__, FALSE),
 
             array(array(
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-one.txt',
-                __DIR__ . '/sample/file-helper/sample-one-no-exists.txt'
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-one.txt',
+                __DIR__ . '/../samples/helpers/file-helper/sample-one-no-exists.txt'
             ), TRUE),
         );
     }
