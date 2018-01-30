@@ -413,4 +413,34 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionIsArrayXD()
+    {
+        ArrayHelper::isArrayXD([], 'a');
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionIsArrayXDStrong()
+    {
+        ArrayHelper::isArrayXDStrong([], 'b');
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionIsArrayXDStrongMin()
+    {
+        ArrayHelper::isArrayXDStrongMin([], 'b');
+    }
+
 }
