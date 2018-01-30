@@ -60,15 +60,17 @@ class Route
     private static function checkRoute()
     {
         foreach (self::$config as $route) {
-            if (preg_match($route['route'], self::$query, $m)) {
+            if (preg_match($route['route'], self::$query, $matches)) {
                 // found in routes
                 self::$route['file'] = $route['file'];
+                $max_match_key = max(array_keys($matches));
                 if (isset($route['data']) && is_array($route['data'])) {
                     foreach ($route['data'] as $key => $value) {
                         // change $1 .. $9 to values from preg_match result
-                        for ($i = 1; $i <= 9; $i++) {
-                            if (isset($m[$i])) {
-                                $value = str_replace('$' . $i, $m[$i], $value);
+                        //echo '-'.$key.'-';
+                        for ($i = $max_match_key; $i >= 1; $i--) {
+                            if (isset($matches[$i])) {
+                                $value = str_replace('$' . $i, $matches[$i], $value);
                             }
                         }
                         // set data to $module_data
