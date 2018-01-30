@@ -7,8 +7,6 @@
 
 namespace fly\helpers\tests;
 
-require_once __DIR__ . '/../../src/helpers/ArrayHelper.php';
-
 use fly\helpers\ArrayHelper;
 
 /**
