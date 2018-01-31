@@ -1,0 +1,1 @@
+<?php echo 'INCLUDE TWO - ' . (isset($VAR_ONE) ? $VAR_ONE : '_NO_VAR_ONE_') . (isset($VAR_TWO) ? $VAR_TWO : '_NO_VAR_TWO_');
