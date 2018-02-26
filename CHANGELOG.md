@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+- Add class `fly\Database` for connect to databases.
+
 ## v0.2 (January 31, 2018)
 - Add class `fly\Route`
 
