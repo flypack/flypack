@@ -28,12 +28,11 @@ class QueryBuilder extends QueryValidator
     public function clearSelect()
     {
         // Check query type
-        if (!$this->_isQueryTypeSelect()) {
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
             throw new \Exception('fly\Database: Query type is not a SELECT');
         }
 
         // Clear format and SELECT conditions
-        $this->resultFormat = 'ALL';
         $this->select = [];
 
         return $this;
@@ -51,13 +50,8 @@ class QueryBuilder extends QueryValidator
     public function addSelect($data = '*')
     {
         // Check query type
-        if (!$this->_isQueryTypeSelect()) {
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
             throw new \Exception('fly\Database: Query type is not a SELECT');
-        }
-
-        // Check query result format
-        if (!$this->_isResultFormatAll()) {
-            throw new \Exception('fly\Database: Query result format is not an ALL');
         }
 
         // TODO: rewrite this part of method
@@ -115,105 +109,6 @@ class QueryBuilder extends QueryValidator
     public function selectAll()
     {
         return $this->select('*');
-    }
-
-    /**
-     * Select one row and set fields
-     * Format: '*' OR 'field' OR ['field1', 'field2', ... ]
-     *
-     * @param string|array $data
-     *
-     * @return $this
-     * @throws \Exception
-     */
-    public function row($data = '*')
-    {
-        // Check query type
-        if (!$this->_isQueryTypeSelect()) {
-            throw new \Exception('fly\Database: Query type is not a SELECT');
-        }
-
-        // Check query result format
-        if (!$this->_isResultFormatRow()) {
-            throw new \Exception('fly\Database: Query result format is not a ROW');
-        }
-
-        // Set fields
-        $this->select($data);
-
-        // Set rows limit
-        $this->limit(1);
-
-        return $this;
-    }
-
-    /**
-     * Select one column and set field
-     * Format: 'field'
-     *
-     * TODO: add [ field ] data format
-     *
-     * @param string $data
-     *
-     * @return $this
-     * @throws \Exception
-     */
-    public function column($data)
-    {
-        // Check query type
-        if (!$this->_isQueryTypeSelect()) {
-            throw new \Exception('fly\Database: Query type is not a SELECT');
-        }
-
-        // Check query result format
-        if (!$this->_isResultFormatColumn()) {
-            throw new \Exception('fly\Database: Query result format is not a COLUMN');
-        }
-
-        if (!$this->_isFieldNameValid($data)) {
-            throw new \Exception('fly\Database: Expects parameter 1 to be a valid field name');
-        }
-
-        // Set field
-        $this->select($data);
-
-        return $this;
-    }
-
-    /**
-     * Select value and set field
-     * Format: 'field'
-     *
-     * TODO: add [ field ] data format
-     *
-     * @param string $data
-     *
-     * @return $this
-     * @throws \Exception
-     */
-    public function value($data)
-    {
-        // Check query type
-        if (!$this->_isQueryTypeSelect()) {
-            throw new \Exception('fly\Database: Query type is not a SELECT');
-        }
-
-        // Check query result format
-        if (!$this->_isResultFormatValue()) {
-            throw new \Exception('fly\Database: Query result format is not a VALUE');
-        }
-
-        if (!$this->_isFieldNameValid($data)) {
-            throw new \Exception('fly\Database: Expects parameter 1 to be a valid field name');
-        }
-
-        // Set fields
-        $this->select($data);
-
-        // Set rows limit
-        $this->limit(1);
-
-        return $this;
     }
 
     /* FROM methods */
@@ -631,7 +526,7 @@ class QueryBuilder extends QueryValidator
             throw new \Exception('fly\Database: Expects parameter 1 to be a valid limit');
         }
 
-        if ($this->_isQueryTypeSelect() && ($this->_isResultFormatRow() || $this->_isResultFormatValue()) && $data !== 1) {
+        if ($this->_checkQueryTypeAssigned('SELECT') && ($this->_checkResultFormatAssigned('ROW') || $this->_checkResultFormatAssigned('VALUE')) && $data !== 1) {
             throw new \Exception('fly\Database: ROW and VALUE formats need limit = 1');
         }
 

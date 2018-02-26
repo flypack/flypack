@@ -15,94 +15,158 @@ namespace fly\database;
 class QueryChecker extends QueryStarter
 {
 
+    // Query type functions
+
     /**
-     * Check and set query type
-     *
      * @param string $type
      *
      * @return bool
      */
-    protected function _isQueryType($type)
+    protected function _checkQueryTypeAssigned($type)
     {
-        // check type of query
-        if ($this->queryType !== FALSE && $this->queryType !== $type) {
+        if ($this->queryType === $type) {
+            // Query type is assigned to $type
+            return TRUE;
+        }
+
+        // Query type is assigned to another type or not assigned
+        return FALSE;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    protected function _checkQueryTypeAvailable($type)
+    {
+        if ($this->queryType === FALSE) {
+            // Query type is not assigned
+            return TRUE;
+        }
+
+        if ($this->_checkQueryTypeAssigned($type)) {
+            // Query type is assigned to $type
+            return TRUE;
+        }
+
+        // Query type is assigned to another type
+        return FALSE;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    private function _checkQueryTypeAvailableAndSet($type)
+    {
+        if (!$this->_checkQueryTypeAvailable($type)) {
+            // Query type is assigned to another type
             return FALSE;
         }
 
-        // set query type
+        // Set query type to $type
         $this->queryType = $type;
 
         return TRUE;
     }
 
     /**
-     * Check and set SELECT query type
-     *
      * @return bool
      */
-    protected function _isQueryTypeSelect()
+    protected function _checkQueryTypeAvailableAndSetSelect()
     {
-        return $this->_isQueryType('SELECT');
+        return $this->_checkQueryTypeAvailableAndSet('SELECT');
     }
 
+    // Result format functions
+
     /**
-     * Check and set query result format
-     *
      * @param string $format
      *
      * @return bool
      */
-    protected function _isResultFormat($format)
+    protected function _checkResultFormatAssigned($format)
     {
-        // check format of query result
-        if ($this->resultFormat !== FALSE && $this->resultFormat !== $format) {
+        if ($this->resultFormat === $format) {
+            // Result format is assigned to $format
+            return TRUE;
+        }
+
+        // Result format is assigned to another format or not assigned
+        return FALSE;
+    }
+
+    /**
+     * @param string $format
+     *
+     * @return bool
+     */
+    protected function _checkResultFormatAvailable($format)
+    {
+        if ($this->resultFormat === FALSE) {
+            // Result format is not assigned
+            return TRUE;
+        }
+
+        if ($this->_checkResultFormatAssigned($format)) {
+            // Result format is assigned to $format
+            return TRUE;
+        }
+
+        // Result format is assigned to another format
+        return FALSE;
+    }
+
+    /**
+     * @param string $format
+     *
+     * @return bool
+     */
+    private function _checkResultFormatAvailableAndSet($format)
+    {
+        if (!$this->_checkResultFormatAvailable($format)) {
+            // Result format is assigned to another format
             return FALSE;
         }
 
-        // set query result format
+        // Set result format to $format
         $this->resultFormat = $format;
 
         return TRUE;
     }
 
     /**
-     * Check and set query result format ALL
-     *
      * @return bool
      */
-    protected function _isResultFormatAll()
+    protected function _checkResultFormatAvailableAndSetAll()
     {
-        return $this->_isResultFormat('ALL');
+        return $this->_checkResultFormatAvailableAndSet('ALL');
     }
 
     /**
-     * Check and set query result format ROW
-     *
      * @return bool
      */
-    protected function _isResultFormatRow()
+    protected function _checkResultFormatAvailableAndSetRow()
     {
-        return $this->_isResultFormat('ROW');
+        return $this->_checkResultFormatAvailableAndSet('ROW');
     }
 
     /**
-     * Check and set query result format COLUMN
-     *
      * @return bool
      */
-    protected function _isResultFormatColumn()
+    protected function _checkResultFormatAvailableAndSetColumn()
     {
-        return $this->_isResultFormat('COLUMN');
+        return $this->_checkResultFormatAvailableAndSet('COLUMN');
     }
 
     /**
-     * Check and set query result format VALUE
-     *
      * @return bool
      */
-    protected function _isResultFormatValue()
+    protected function _checkResultFormatAvailableAndSetValue()
     {
-        return $this->_isResultFormat('VALUE');
+        return $this->_checkResultFormatAvailableAndSet('VALUE');
     }
 
 }

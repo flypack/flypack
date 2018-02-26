@@ -39,22 +39,46 @@ class QueryMain extends QueryParser
      * @return $this|array
      * @throws \Exception
      */
-    public function one($returnAsArray = 1)
+    public function row($returnAsArray = 1)
     {
-        return $this->offset(0)->limit(1)->run($returnAsArray);
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
+            throw new \Exception('fly\Database: Query type is not a SELECT');
+        }
+
+        // Check query result format
+        if (!$this->_checkResultFormatAvailableAndSetRow()) {
+            throw new \Exception('fly\Database: Query result format is not a ROW');
+        }
+
+        // Set LIMIT 1
+        $this->limit(1);
+
+        return $this->offset(0)->run($returnAsArray);
     }
 
     /**
      * Public method for execute query with LIMIT = ALL
      *
+     * @param int $limit
      * @param int $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function all($returnAsArray = 1)
+    public function all($limit = 0, $returnAsArray = 1)
     {
-        return $this->offset(0)->limit(0)->run($returnAsArray);
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
+            throw new \Exception('fly\Database: Query type is not a SELECT');
+        }
+
+        // Check query result format
+        if (!$this->_checkResultFormatAvailableAndSetAll()) {
+            throw new \Exception('fly\Database: Query result format is not a ALL');
+        }
+
+        return $this->offset(0)->limit($limit)->run($returnAsArray);
     }
 
     /**

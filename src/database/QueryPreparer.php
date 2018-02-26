@@ -39,7 +39,7 @@ class QueryPreparer extends QueryBuilder
      */
     private function _prepare()
     {
-        if ($this->_isQueryTypeSelect()) {
+        if ($this->_checkQueryTypeAssigned('SELECT')) {
             $this->_prepareSelect();
 
             return $this;
