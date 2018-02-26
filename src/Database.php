@@ -12,15 +12,12 @@
 
 namespace fly;
 
+use fly\database\Connection;
 use fly\database\QueryMain;
 use fly\helpers\ArrayHelper;
 
 class Database
 {
-    /**
-     * @var $pdo \PDO
-     */
-    private static $pdo;
 
     /**
      * @var array $config  array pdo connect config
@@ -237,12 +234,8 @@ class Database
         self::setOptions($opt);
 
         // connect
-        self::$pdo = new \PDO(self::$config['dsn'], self::$config['username'], self::$config['password'], self::$opt);
-
-        if (!self::$pdo) {
-            // pdo connect error
-            // TODO: add error info
-            throw new \Exception('fly\Database: PDO connect error');
+        if (!Connection::Connect(self::$config['dsn'], self::$config['username'], self::$config['password'], self::$opt)) {
+            return FALSE;
         }
 
         return TRUE;
@@ -253,7 +246,7 @@ class Database
      */
     public static function Close()
     {
-        self::$pdo = null;
+        Connection::Close();
     }
 
     /**
@@ -267,7 +260,7 @@ class Database
     public static function SQL($sql, $params = [])
     {
         // PDO prepare SQL
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = Connection::getConnection()->prepare($sql);
 
         // Execute SQL with params
         $stmt->execute($params);
