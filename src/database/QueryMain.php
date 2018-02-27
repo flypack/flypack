@@ -54,7 +54,7 @@ class QueryMain extends QueryParser
         // Set LIMIT 1
         $this->limit(1);
 
-        return $this->offset(0)->run($returnAsArray);
+        return $this->run($returnAsArray);
     }
 
     /**
@@ -78,7 +78,7 @@ class QueryMain extends QueryParser
             throw new \Exception('fly\Database: Query result format is not a ALL');
         }
 
-        return $this->offset(0)->limit($limit)->run($returnAsArray);
+        return $this->limit($limit)->run($returnAsArray);
     }
 
     /**
