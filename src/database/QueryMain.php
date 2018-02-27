@@ -60,8 +60,8 @@ class QueryMain extends QueryParser
     /**
      * Public method for execute query with LIMIT = ALL
      *
-     * @param int $limit
-     * @param int $returnAsArray
+     * @param int|array $limit
+     * @param int       $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
