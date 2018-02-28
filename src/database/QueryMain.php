@@ -16,14 +16,14 @@ class QueryMain extends QueryParser
 {
 
     /**
-     * Public method for execute query
+     * Private method for execute query
      *
      * @param int $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function run($returnAsArray = 1)
+    private function run($returnAsArray = 1)
     {
         $this->prepare()->execute();
         $this->parse();
