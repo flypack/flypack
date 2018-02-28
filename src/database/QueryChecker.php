@@ -80,6 +80,14 @@ class QueryChecker extends QueryStarter
         return $this->_checkQueryTypeAvailableAndSet('SELECT');
     }
 
+    /**
+     * @return bool
+     */
+    protected function _checkQueryTypeAvailableAndSetInsert()
+    {
+        return $this->_checkQueryTypeAvailableAndSet('INSERT');
+    }
+
     // Result format functions
 
     /**
