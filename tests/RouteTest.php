@@ -119,4 +119,101 @@ class RouteTest extends TestCase
         );
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testGetQuery()
+    {
+        $this->getContentAfterRoute('p123');
+        $this->assertEquals('p123', Route::getQuery());
+    }
+
+    /**
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Route::Init(): Expects parameter 1 to be a valid config array
+     *
+     * @throws \Exception
+     */
+    public function testExceptionOnInvalidConfig()
+    {
+        Route::Init('123');
+    }
+
+    /**
+     * @param $query
+     *
+     * @expectedException        \Exception
+     * @expectedExceptionMessage No routes found
+     *
+     * @dataProvider             dataProviderInvalidRoute
+     *
+     * @throws \Exception
+     */
+    public function testExceptionOnInvalidRoute($query)
+    {
+        $_GET['query'] = $query;
+        Route::Init([
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+            ],
+            [
+                'route' => '/^page$/i',
+                'file' => __DIR__ . '/samples/route/inc-file-two.php',
+                'data' => [
+                    'VAR_ONE' => 'reg2',
+                ],
+            ],
+            [
+                'route' => '/^p(\d+)$/i',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+                'data' => [
+                    'VAR_ONE' => 'reg3vars',
+                    'VAR_TWO' => '$1',
+                ],
+            ],
+            [
+                'route' => '/^test(\d)$/',
+                'file' => __DIR__ . '/samples/route/inc-file-two.php',
+                'data' => [
+                    'VAR_ONE' => 'reg4test',
+                    'VAR_TWO' => '$1',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderInvalidRoute()
+    {
+        return [
+            ['abc'],
+            ['helloWorld'],
+            ['page1'],
+            ['p777p'],
+            ['p777-'],
+            ['test32'],
+            ['Test3'],
+        ];
+    }
+
+    /**
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Route::Init(): No route file exists
+     *
+     * @throws \Exception
+     */
+    public function testExceptionOnInvalidFilePath()
+    {
+        $_GET['query'] = 'helloworld';
+        Route::Init([
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/no-file-exists.php',
+            ],
+        ]);
+    }
+
 }
