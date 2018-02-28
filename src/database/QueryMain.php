@@ -87,12 +87,13 @@ class QueryMain extends QueryParser
     }
 
     /**
-     * @param int $returnAsArray
+     * @param bool|int|array $limit
+     * @param int            $returnAsArray
      *
      * @return array|$this
      * @throws \Exception
      */
-    public function column($returnAsArray = 1)
+    public function column($limit = FALSE, $returnAsArray = 1)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -107,6 +108,11 @@ class QueryMain extends QueryParser
         // Check query result format
         if (!$this->_checkResultFormatAvailableAndSetColumn()) {
             throw new \Exception('fly\Database: Query result format is not a COLUMN');
+        }
+
+        // Check $limit
+        if ((is_numeric($limit) && $limit >= 0) || is_array($limit)) {
+            $this->limit($limit);
         }
 
         return $this->run($returnAsArray);
