@@ -97,22 +97,15 @@ class Route
         return TRUE;
     }
 
-    /**
-     * @return bool
-     */
     private static function includeFile()
     {
         // set variables
         foreach (self::$route['data'] as $key => $value) {
             $$key = $value;
         }
+
         // include file
-        if (self::$route['file'] !== FALSE) {
-            include self::$route['file'];
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        include self::$route['file'];
     }
 
     /**
@@ -137,9 +130,7 @@ class Route
             throw new \Exception('Route::Init(): No route file exists');
         }
 
-        if (!self::includeFile()) {
-            throw new \Exception('Route::Init(): File include error');
-        }
+        self::includeFile();
     }
 
     /**
