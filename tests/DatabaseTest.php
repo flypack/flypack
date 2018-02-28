@@ -238,7 +238,6 @@ class DatabaseTest extends TestCase
             ->from(['city'])
             ->orderBy('id')
             ->value();
-        $this->assertEquals(1, count($result));
         $this->assertEquals('Minsk', $result);
     }
 
