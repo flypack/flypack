@@ -32,6 +32,30 @@ class QueryMain extends QueryParser
     }
 
     /**
+     * Public method for execute query with LIMIT = ALL
+     *
+     * @param int|array $limit
+     * @param int       $returnAsArray
+     *
+     * @return $this|array
+     * @throws \Exception
+     */
+    public function all($limit = 0, $returnAsArray = 1)
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
+            throw new \Exception('fly\Database: Query type is not a SELECT');
+        }
+
+        // Check query result format
+        if (!$this->_checkResultFormatAvailableAndSetAll()) {
+            throw new \Exception('fly\Database: Query result format is not a ALL');
+        }
+
+        return $this->limit($limit)->run($returnAsArray);
+    }
+
+    /**
      * Public method for execute query with LIMIT = ONE
      *
      * @param int $returnAsArray
@@ -58,27 +82,58 @@ class QueryMain extends QueryParser
     }
 
     /**
-     * Public method for execute query with LIMIT = ALL
+     * @param int $returnAsArray
      *
-     * @param int|array $limit
-     * @param int       $returnAsArray
-     *
-     * @return $this|array
+     * @return array|$this
      * @throws \Exception
      */
-    public function all($limit = 0, $returnAsArray = 1)
+    public function column($returnAsArray = 1)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
             throw new \Exception('fly\Database: Query type is not a SELECT');
         }
 
-        // Check query result format
-        if (!$this->_checkResultFormatAvailableAndSetAll()) {
-            throw new \Exception('fly\Database: Query result format is not a ALL');
+        // Check count of select fields
+        if (!count($this->select) || count($this->select) > 1 || $this->select[0] === '*') {
+            throw new \Exception('fly\Database: Query result format COLUMN require only one field in SELECT part');
         }
 
-        return $this->limit($limit)->run($returnAsArray);
+        // Check query result format
+        if (!$this->_checkResultFormatAvailableAndSetColumn()) {
+            throw new \Exception('fly\Database: Query result format is not a COLUMN');
+        }
+
+        return $this->run($returnAsArray);
+    }
+
+    /**
+     * @param int $returnAsArray
+     *
+     * @return array|$this
+     * @throws \Exception
+     */
+    public function value($returnAsArray = 1)
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
+            throw new \Exception('fly\Database: Query type is not a SELECT');
+        }
+
+        // Check count of select fields
+        if (!count($this->select) || count($this->select) > 1 || $this->select[0] === '*') {
+            throw new \Exception('fly\Database: Query result format VALUE require only one field in SELECT part');
+        }
+
+        // Check query result format
+        if (!$this->_checkResultFormatAvailableAndSetValue()) {
+            throw new \Exception('fly\Database: Query result format is not a VALUE');
+        }
+
+        // Set LIMIT = 1
+        $this->limit(1);
+
+        return $this->run($returnAsArray);
     }
 
     /**
