@@ -18,12 +18,12 @@ class QueryMain extends QueryParser
     /**
      * Private method for execute query
      *
-     * @param int $returnAsArray
+     * @param bool $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    private function run($returnAsArray = 1)
+    private function run($returnAsArray = TRUE)
     {
         $this->prepare()->execute();
         $this->parse();
@@ -35,12 +35,12 @@ class QueryMain extends QueryParser
      * Public method for execute query with LIMIT = ALL
      *
      * @param bool|int|array $limit
-     * @param int            $returnAsArray
+     * @param bool           $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function all($limit = FALSE, $returnAsArray = 1)
+    public function all($limit = FALSE, $returnAsArray = TRUE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -63,12 +63,12 @@ class QueryMain extends QueryParser
     /**
      * Public method for execute query with LIMIT = ONE
      *
-     * @param int $returnAsArray
+     * @param bool $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function row($returnAsArray = 1)
+    public function row($returnAsArray = TRUE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -88,12 +88,12 @@ class QueryMain extends QueryParser
 
     /**
      * @param bool|int|array $limit
-     * @param int            $returnAsArray
+     * @param bool           $returnAsArray
      *
      * @return array|$this
      * @throws \Exception
      */
-    public function column($limit = FALSE, $returnAsArray = 1)
+    public function column($limit = FALSE, $returnAsArray = TRUE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -119,12 +119,12 @@ class QueryMain extends QueryParser
     }
 
     /**
-     * @param int $returnAsArray
+     * @param bool $returnAsArray
      *
      * @return array|$this
      * @throws \Exception
      */
-    public function value($returnAsArray = 1)
+    public function value($returnAsArray = TRUE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
