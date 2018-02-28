@@ -34,13 +34,13 @@ class QueryMain extends QueryParser
     /**
      * Public method for execute query with LIMIT = ALL
      *
-     * @param int|array $limit
-     * @param int       $returnAsArray
+     * @param bool|int|array $limit
+     * @param int            $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function all($limit = 0, $returnAsArray = 1)
+    public function all($limit = FALSE, $returnAsArray = 1)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -52,7 +52,12 @@ class QueryMain extends QueryParser
             throw new \Exception('fly\Database: Query result format is not a ALL');
         }
 
-        return $this->limit($limit)->run($returnAsArray);
+        // Check $limit
+        if ((is_numeric($limit) && $limit >= 0) || is_array($limit)) {
+            $this->limit($limit);
+        }
+
+        return $this->run($returnAsArray);
     }
 
     /**
