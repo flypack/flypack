@@ -102,7 +102,7 @@ class DatabaseTest extends TestCase
         $this->assertEquals([0 => ['count' => 12]], $result);
 
         $result = Database::SQL("SELECT `name` FROM `city` WHERE `id` = ?;", [11]);
-        $this->assertEquals([0 => ['name' => 'Nizni Novgorod']], $result);
+        $this->assertEquals([0 => ['name' => 'Nizhny Novgorod']], $result);
 
         $result = Database::SQL("SELECT * FROM `city` WHERE `CountryCode` = ?;", ['BLR']);
         $this->assertEquals(7, count($result));
@@ -110,7 +110,7 @@ class DatabaseTest extends TestCase
         $result = Database::SQL("SELECT `id`, `Name`, `CountryCode`, (SELECT `Language` FROM `countrylanguage` `cl` WHERE `c`.`CountryCode` = `cl`.`CountryCode` AND `isOfficial` = ?) as `language` FROM `city` `c` WHERE `id` = ?;", ['T', '18']);
         $this->assertEquals(1, count($result));
         $this->assertEquals(18, $result[0]['id']);
-        $this->assertEquals('Rostov-na-Donu', $result[0]['Name']);
+        $this->assertEquals('Rostov-on-Don', $result[0]['Name']);
         $this->assertEquals('RUS', $result[0]['CountryCode']);
         $this->assertEquals('Russian', $result[0]['language']);
     }
@@ -161,7 +161,7 @@ class DatabaseTest extends TestCase
             ->addSelect('*')
             ->all();
         $this->assertEquals(19, count($result));
-        $this->assertEquals(5, count($result[0]));
+        $this->assertEquals(4, count($result[0]));
 
         $result = Database::Query()
             ->selectAll()
@@ -181,7 +181,7 @@ class DatabaseTest extends TestCase
             ->selectAll()
             ->from(['city'])
             ->row();
-        $this->assertEquals(5, count($result));
+        $this->assertEquals(4, count($result));
 
         $result = Database::Query()
             ->select(['Code', 'Name', 'Code2'])
@@ -223,8 +223,8 @@ class DatabaseTest extends TestCase
             ->orderBy('id')
             ->column([10, 3]);
         $this->assertEquals(3, count($result));
-        $this->assertEquals('Nizni Novgorod', $result[0]);
-        $this->assertEquals('Jekaterinburg', $result[1]);
+        $this->assertEquals('Nizhny Novgorod', $result[0]);
+        $this->assertEquals('Yekaterinburg', $result[1]);
         $this->assertEquals('Samara', $result[2]);
     }
 
@@ -253,18 +253,18 @@ class DatabaseTest extends TestCase
             ->all();
         $this->assertEquals(1, count($result));
         $this->assertEquals('Minsk', $result[0]['Name']);
-        $this->assertEquals(1674000, $result[0]['Population']);
+        $this->assertEquals(2645500, $result[0]['Population']);
 
         $result = Database::Query()
             ->selectAll()
             ->from('city')
             ->where([
                 ['CountryCode', 'RUS'],
-                ['Name', 'St Petersburg'],
+                ['Name', 'Saint Petersburg'],
             ])
             ->row();
-        $this->assertEquals('St Petersburg', $result['Name']);
-        $this->assertEquals(4694000, $result['Population']);
+        $this->assertEquals('Saint Petersburg', $result['Name']);
+        $this->assertEquals(5356755, $result['Population']);
 
         $result = Database::Query()
             ->selectAll()
@@ -275,14 +275,14 @@ class DatabaseTest extends TestCase
         $this->assertEquals(1, count($result));
         $this->assertEquals('Gomel', $result[0]['Name']);
         $this->assertEquals('BLR', $result[0]['CountryCode']);
-        $this->assertEquals(475000, $result[0]['Population']);
+        $this->assertEquals(535229, $result[0]['Population']);
 
         $result = Database::Query()
             ->selectAll()
             ->from('city')
             ->where([
                 ['CountryCode', 'RUS'],
-                ['Name', 'St Petersburg'],
+                ['Name', 'Saint Petersburg'],
             ])
             ->orWhere([
                 ['CountryCode', 'BLR'],
@@ -293,10 +293,10 @@ class DatabaseTest extends TestCase
         $this->assertEquals(2, count($result));
         $this->assertEquals('Minsk', $result[0]['Name']);
         $this->assertEquals('BLR', $result[0]['CountryCode']);
-        $this->assertEquals(1674000, $result[0]['Population']);
-        $this->assertEquals('St Petersburg', $result[1]['Name']);
+        $this->assertEquals(2645500, $result[0]['Population']);
+        $this->assertEquals('Saint Petersburg', $result[1]['Name']);
         $this->assertEquals('RUS', $result[1]['CountryCode']);
-        $this->assertEquals(4694000, $result[1]['Population']);
+        $this->assertEquals(5356755, $result[1]['Population']);
 
         $result = Database::Query()
             ->selectAll()
@@ -304,7 +304,7 @@ class DatabaseTest extends TestCase
             ->where([
                 [
                     ['CountryCode', 'RUS'],
-                    ['Name', 'St Petersburg'],
+                    ['Name', 'Saint Petersburg'],
                 ],
                 ['OR'],
                 [
@@ -317,10 +317,10 @@ class DatabaseTest extends TestCase
         $this->assertEquals(2, count($result));
         $this->assertEquals('Minsk', $result[0]['Name']);
         $this->assertEquals('BLR', $result[0]['CountryCode']);
-        $this->assertEquals(1674000, $result[0]['Population']);
-        $this->assertEquals('St Petersburg', $result[1]['Name']);
+        $this->assertEquals(2645500, $result[0]['Population']);
+        $this->assertEquals('Saint Petersburg', $result[1]['Name']);
         $this->assertEquals('RUS', $result[1]['CountryCode']);
-        $this->assertEquals(4694000, $result[1]['Population']);
+        $this->assertEquals(5356755, $result[1]['Population']);
 
         $result = Database::Query()
             ->selectAll()
@@ -328,7 +328,7 @@ class DatabaseTest extends TestCase
             ->where([
                 [
                     ['CountryCode', 'RUS'],
-                    ['Name', 'St Petersburg'],
+                    ['Name', 'Saint Petersburg'],
                 ],
                 ['OR'],
                 [
@@ -352,10 +352,10 @@ class DatabaseTest extends TestCase
             ->from(['city'])
             ->orderBy(['id', 'DESC'])
             ->row();
-        $this->assertEquals(5, count($result));
+        $this->assertEquals(4, count($result));
         $this->assertEquals(19, $result['ID']);
         $this->assertEquals('Perm', $result['Name']);
-        $this->assertEquals(1009700, $result['Population']);
+        $this->assertEquals(1048005, $result['Population']);
 
         $result = Database::Query()
             ->selectAll()
@@ -366,11 +366,11 @@ class DatabaseTest extends TestCase
             ->all(3);
         $this->assertEquals(3, count($result));
         $this->assertEquals('Moscow', $result[0]['Name']);
-        $this->assertEquals(8389200, $result[0]['Population']);
-        $this->assertEquals('St Petersburg', $result[1]['Name']);
-        $this->assertEquals(4694000, $result[1]['Population']);
+        $this->assertEquals(12500123, $result[0]['Population']);
+        $this->assertEquals('Saint Petersburg', $result[1]['Name']);
+        $this->assertEquals(5356755, $result[1]['Population']);
         $this->assertEquals('Minsk', $result[2]['Name']);
-        $this->assertEquals(1674000, $result[2]['Population']);
+        $this->assertEquals(2645500, $result[2]['Population']);
     }
 
     /**
