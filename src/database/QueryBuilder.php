@@ -33,6 +33,30 @@ class QueryBuilder extends QueryValidator
         return $this;
     }
 
+    /**
+     * @param string $table
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function into($table)
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAssigned('INSERT')) {
+            throw new \Exception('fly\Database: Query type required an INSERT');
+        }
+
+        // Check table name
+        if (!$this->_isTableNameValid($table)) {
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid table name');
+        }
+
+        // Set table name to INTO part
+        $this->insertInto = $table;
+
+        return $this;
+    }
+
     /* SELECT methods */
 
     /**
