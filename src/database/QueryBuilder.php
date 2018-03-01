@@ -17,6 +17,22 @@ use fly\helpers\ArrayHelper;
 class QueryBuilder extends QueryValidator
 {
 
+    // INSERT
+
+    /**
+     * @return $this
+     * @throws \Exception
+     */
+    public function insert()
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetInsert()) {
+            throw new \Exception('fly\Database: Query type is not a INSERT');
+        }
+
+        return $this;
+    }
+
     /* SELECT methods */
 
     /**
