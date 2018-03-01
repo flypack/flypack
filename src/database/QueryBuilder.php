@@ -66,7 +66,7 @@ class QueryBuilder extends QueryValidator
     public function values($data)
     {
         // Check query type
-        if (!$this->_checkQueryTypeAssigned('INSERT')) {
+        if (!$this->_checkQueryTypeAvailableAndSetInsertValues()) {
             throw new \Exception('fly\Database: Query type required an INSERT');
         }
 
