@@ -88,6 +88,17 @@ class QueryChecker extends QueryStarter
         return $this->_checkQueryTypeAvailableAndSet('INSERT');
     }
 
+    protected function _checkQueryTypeAvailableAndSetInsertValues()
+    {
+        if (!$this->_checkQueryTypeAssigned('INSERT') && !$this->_checkQueryTypeAssigned('INSERT-VALUES')) {
+            return FALSE;
+        }
+
+        $this->queryType = 'INSERT-VALUES';
+
+        return TRUE;
+    }
+
     // Result format functions
 
     /**
