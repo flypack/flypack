@@ -57,6 +57,39 @@ class QueryBuilder extends QueryValidator
         return $this;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function values($data)
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAssigned('INSERT')) {
+            throw new \Exception('fly\Database: Query type required an INSERT');
+        }
+
+        // Check data
+        if (!is_array($data) || (!ArrayHelper::isArrayStrong($data) && !ArrayHelper::isArray2DStrong($data))) {
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid data array');
+        }
+
+        // one-level array
+        if (ArrayHelper::isArrayStrong($data)) {
+            $this->insertValues[] = $data;
+        }
+
+        // two-level array
+        if (ArrayHelper::isArray2DStrong($data)) {
+            foreach ($data as $row) {
+                $this->insertValues[] = $data;
+            }
+        }
+
+        return $this;
+    }
+
     /* SELECT methods */
 
     /**
