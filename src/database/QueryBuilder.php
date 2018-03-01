@@ -83,7 +83,7 @@ class QueryBuilder extends QueryValidator
         // two-level array
         if (ArrayHelper::isArray2DStrong($data)) {
             foreach ($data as $row) {
-                $this->insertValues[] = $data;
+                $this->insertValues[] = $row;
             }
         }
 
