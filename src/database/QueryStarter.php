@@ -20,6 +20,9 @@ class QueryStarter
     protected $queryType = FALSE;
     protected $resultFormat = FALSE;
 
+    protected $insertInto = '';
+    protected $insertValues = [];
+
     protected $select = [];
     protected $from = [];
     protected $where = [];
