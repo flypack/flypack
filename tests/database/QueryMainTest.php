@@ -1,7 +1,7 @@
 <?php
 
 /**
- * QueryBuilderTest
+ * QueryMainTest
  *
  * @copyright Copyright (c) 2017 Roman Rozinko
  * @license   MIT License
@@ -12,10 +12,10 @@
 
 namespace fly\database\tests;
 
+use fly\database\QueryMain;
 use PHPUnit\Framework\TestCase;
-use fly\database\QueryBuilder;
 
-class _QueryBuilder extends QueryBuilder
+class _QueryMain extends QueryMain
 {
 
     public function getProtectedVar($name)
@@ -33,7 +33,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsert()
     {
-        $class = new _QueryBuilder();
+        $class = new _QueryMain();
 
         $this->assertEquals(FALSE, $class->getProtectedVar('queryType'));
 
@@ -46,7 +46,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsertInto()
     {
-        $class = new _QueryBuilder();
+        $class = new _QueryMain();
         $class->insert();
 
         $this->assertEquals('', $class->getProtectedVar('insertInto'));
@@ -60,7 +60,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsertValues()
     {
-        $class = new _QueryBuilder();
+        $class = new _QueryMain();
         $class->insert()->into('test_table');
 
         $this->assertEquals([], $class->getProtectedVar('insertValues'));
