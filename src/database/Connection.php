@@ -56,6 +56,23 @@ class Connection
     }
 
     /**
+     * @param string $sql
+     * @param array  $params
+     *
+     * @return \PDOStatement
+     */
+    public static function SQL($sql, $params = [])
+    {
+        // PDO prepare SQL
+        $stmt = Connection::getConnection()->prepare($sql);
+
+        // Execute SQL with params
+        $stmt->execute($params);
+
+        return $stmt;
+    }
+
+    /**
      * Close PDO connection
      */
     public static function Close()
