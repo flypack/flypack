@@ -45,6 +45,10 @@ class QueryPreparer extends QueryBuilder
             return $this;
         }
 
+        if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
+            return $this->_prepareInsertValues();
+        }
+
         throw new \Exception('fle\Database: Wrong query type');
     }
 
@@ -66,15 +70,95 @@ class QueryPreparer extends QueryBuilder
     }
 
     /**
+     * @return $this
+     * @throws \Exception
+     */
+    private function _prepareInsertValues()
+    {
+        $this->_preparePartInsert();
+        $this->_preparePartInto();
+        $this->_preparePartValues();
+
+        return $this;
+    }
+
+    /**
      * Prepare SQL for execute
      *
      * @return $this
      */
     private function _prepareSQL()
     {
-        $this->preparedSQL = trim(implode(' ', $this->prepared)) . ';';
+        if ($this->_checkQueryTypeAssigned('SELECT')) {
+            $this->preparedSQL = trim(implode(' ', $this->prepared)) . ';';
+        }
+
+        if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
+            $this->preparedSQL = [];
+            foreach ($this->prepared['VALUES'] as $key => $valuesPart) {
+                $this->preparedSQL[$key] = $this->prepared['INSERT'] . ' ' . $this->prepared['INTO'] . ' ' . $valuesPart . ';';
+            }
+        }
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function _preparePartInsert()
+    {
+        $this->prepared['INSERT'] = 'INSERT';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function _preparePartInto()
+    {
+        $this->prepared['INTO'] = 'INTO `' . $this->insertInto . '`';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws \Exception
+     */
+    private function _preparePartValues()
+    {
+        if (ArrayHelper::isArray2DStrong($this->insertValues)) {
+            // Insert many rows
+            $this->prepared['VALUES'] = [];
+
+            foreach ($this->insertValues as $valuesKey => $data) {
+                $this->prepared['VALUES'][$valuesKey] = $this->_preparePartValuesOne($data, $valuesKey);
+            }
+        } else {
+            // Insert one row
+            $this->prepared['VALUES'] = $this->_preparePartValuesOne($this->insertValues);
+        }
+
+        return $this;
+    }
+
+    private function _preparePartValuesOne($data, $preparedKey = FALSE)
+    {
+        $keys = $values = [];
+        $this->_resetPreparedParamNumber();
+
+        foreach ($data as $key => $value) {
+            $keys[] = $key;
+            if ($preparedKey !== FALSE) {
+                $values[] = $this->_setPrepareParam($value, $preparedKey);
+            } else {
+                $values[] = $this->_setPrepareParam($value);
+            }
+        }
+
+        return '(`' . implode('`, `', $keys) . '`) VALUES (' . implode(', ', $values) . ')';
     }
 
     /**
@@ -231,15 +315,27 @@ class QueryPreparer extends QueryBuilder
      * Prepare params for PDO
      *
      * @param $value
+     * @param $key
      *
      * @return string
      */
-    private function _setPrepareParam($value)
+    private function _setPrepareParam($value, $key = FALSE)
     {
         $this->preparedParamNumber++;
         $preparedName = ':value' . $this->preparedParamNumber;
-        $this->preparedParams[$preparedName] = $value;
+
+        if ($key !== FALSE) {
+            $this->preparedParams[$key][$preparedName] = $value;
+        } else {
+            $this->preparedParams[$preparedName] = $value;
+        }
+
         return $preparedName;
+    }
+
+    private function _resetPreparedParamNumber()
+    {
+        $this->preparedParamNumber = 0;
     }
 
 }
