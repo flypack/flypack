@@ -25,7 +25,11 @@ class QueryExecuter extends QueryPreparer
      */
     protected function execute()
     {
-        return $this->_executeMain()->_executeRelations();
+        if ($this->_checkQueryTypeAssigned('SELECT')) {
+            $this->_executeSelect()->_executeRelations();
+        }
+
+        return $this;
     }
 
     /**
@@ -33,7 +37,7 @@ class QueryExecuter extends QueryPreparer
      *
      * @return $this
      */
-    private function _executeMain()
+    private function _executeSelect()
     {
         $this->executed['main'] = Database::SQL($this->preparedSQL, $this->preparedParams);
 
