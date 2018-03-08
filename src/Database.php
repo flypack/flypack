@@ -262,8 +262,15 @@ class Database
         // get \PDOStatement
         $stmt = Connection::SQL($sql, $params);
 
-        // Fetch to array
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if (mb_substr($sql, 0, 6) == 'SELECT') {
+            // return fetch array
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } elseif (mb_substr($sql, 0, 6) == 'INSERT') {
+            // return row count
+            return $stmt->rowCount();
+        } else {
+            $result = $stmt;
+        }
 
         return $result;
     }
