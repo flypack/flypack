@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase
 
     protected function tearDown()
     {
-        $this->deleteTables();
+        //$this->deleteTables();
 
         parent::tearDown();
     }
@@ -403,6 +403,36 @@ class DatabaseTest extends TestCase
             ->from(['city'])
             ->all([17, 3]);
         $this->assertEquals(2, count($result));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSqlInsert()
+    {
+        $result = Database::SQL("INSERT INTO `city` (`Name`,`CountryCode`,`Population`) VALUES (?,?,?);", ['Mazyr', 'BLR', 111801]);
+        $this->assertEquals(1, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->where(['Name', 'Mazyr'])
+            ->value();
+        $this->assertEquals(111801, $result);
+
+        $result = Database::SQL("INSERT INTO `city` (`Name`,`CountryCode`,`Population`) VALUES (?,?,?), (?,?,?);", ['Baranavichy', 'BLR', 179439, 'Borisov', 'BLR', 142993]);
+        $this->assertEquals(2, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->column(2);
+        $this->assertArrayHasKey(0, $result);
+        $this->assertArrayHasKey(1, $result);
+
+        $this->assertEquals(142993, $result[0]);
+        $this->assertEquals(179439, $result[1]);
     }
 
 }
