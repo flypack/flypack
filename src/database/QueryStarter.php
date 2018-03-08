@@ -46,6 +46,8 @@ class QueryStarter
         'relations' => [],
     ];
 
+    protected $executedRows = 0;
+
     // For QueryParser Class
 
     protected $parsed = [];
