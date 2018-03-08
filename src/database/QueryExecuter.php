@@ -29,6 +29,10 @@ class QueryExecuter extends QueryPreparer
             $this->_executeSelect()->_executeRelations();
         }
 
+        if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
+            $this->_executeInsert();
+        }
+
         return $this;
     }
 
@@ -40,6 +44,20 @@ class QueryExecuter extends QueryPreparer
     private function _executeSelect()
     {
         $this->executed['main'] = Database::SQL($this->preparedSQL, $this->preparedParams);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function _executeInsert()
+    {
+        if (is_array($this->preparedSQL) && count($this->preparedSQL)) {
+            foreach ($this->preparedSQL as $key => $preparedSQL) {
+                $this->executedRows += Database::SQL($this->preparedSQL[$key], $this->preparedParams[$key]);
+            }
+        }
 
         return $this;
     }
