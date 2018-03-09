@@ -20,15 +20,23 @@ class QueryMain extends QueryParser
      *
      * @param bool $returnAsArray
      *
-     * @return $this|array
+     * @return $this|array|int
      * @throws \Exception
      */
-    private function run($returnAsArray = TRUE)
+    public function run($returnAsArray = TRUE)
     {
         $this->prepare()->execute();
-        $this->parse();
 
-        return ($returnAsArray ? $this->returnAsArray() : $this);
+        if ($this->_checkQueryTypeAssigned('SELECT')) {
+            $this->parse();
+            return ($returnAsArray ? $this->returnAsArray() : $this);
+        }
+
+        if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
+            return $this->executedRows;
+        }
+
+        throw new \Exception('fly\Database: Invalid query type');
     }
 
     /**
