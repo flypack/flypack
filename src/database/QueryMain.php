@@ -18,18 +18,16 @@ class QueryMain extends QueryParser
     /**
      * Private method for execute query
      *
-     * @param bool $returnAsArray
-     *
      * @return $this|array|int
      * @throws \Exception
      */
-    public function run($returnAsArray = TRUE)
+    public function run()
     {
         $this->prepare()->execute();
 
         if ($this->_checkQueryTypeAssigned('SELECT')) {
             $this->parse();
-            return ($returnAsArray ? $this->returnAsArray() : $this);
+            return $this->returnAsArray();
         }
 
         if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
@@ -43,12 +41,11 @@ class QueryMain extends QueryParser
      * Public method for execute query with LIMIT = ALL
      *
      * @param bool|int|array $limit
-     * @param bool           $returnAsArray
      *
      * @return $this|array
      * @throws \Exception
      */
-    public function all($limit = FALSE, $returnAsArray = TRUE)
+    public function all($limit = FALSE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -65,18 +62,16 @@ class QueryMain extends QueryParser
             $this->limit($limit);
         }
 
-        return $this->run($returnAsArray);
+        return $this->run();
     }
 
     /**
      * Public method for execute query with LIMIT = ONE
      *
-     * @param bool $returnAsArray
-     *
      * @return $this|array
      * @throws \Exception
      */
-    public function row($returnAsArray = TRUE)
+    public function row()
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -91,17 +86,16 @@ class QueryMain extends QueryParser
         // Set LIMIT 1
         $this->limit(1);
 
-        return $this->run($returnAsArray);
+        return $this->run();
     }
 
     /**
      * @param bool|int|array $limit
-     * @param bool           $returnAsArray
      *
      * @return array|$this
      * @throws \Exception
      */
-    public function column($limit = FALSE, $returnAsArray = TRUE)
+    public function column($limit = FALSE)
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -123,16 +117,14 @@ class QueryMain extends QueryParser
             $this->limit($limit);
         }
 
-        return $this->run($returnAsArray);
+        return $this->run();
     }
 
     /**
-     * @param bool $returnAsArray
-     *
      * @return array|$this
      * @throws \Exception
      */
-    public function value($returnAsArray = TRUE)
+    public function value()
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
@@ -152,7 +144,7 @@ class QueryMain extends QueryParser
         // Set LIMIT = 1
         $this->limit(1);
 
-        return $this->run($returnAsArray);
+        return $this->run();
     }
 
     /**
