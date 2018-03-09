@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase
 
     protected function tearDown()
     {
-        //$this->deleteTables();
+        $this->deleteTables();
 
         parent::tearDown();
     }
@@ -428,11 +428,106 @@ class DatabaseTest extends TestCase
             ->from(['city'])
             ->orderBy(['id', 'DESC'])
             ->column(2);
+        $this->assertEquals(2, count($result));
+
         $this->assertArrayHasKey(0, $result);
         $this->assertArrayHasKey(1, $result);
 
         $this->assertEquals(142993, $result[0]);
         $this->assertEquals(179439, $result[1]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testQueryBuilderInsert()
+    {
+        $result = Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                'Name' => 'Krasnoyarsk',
+                'CountryCode' => 'RUS',
+                'Population' => 1082933,
+            ])
+            ->run();
+        $this->assertEquals(1, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->value();
+        $this->assertEquals(1082933, $result);
+
+        $result = Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                [
+                    'Name' => 'Voronezh',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1039801,
+                ], [
+                    'Name' => 'Volgograd',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1015586,
+                ]])
+            ->run();
+        $this->assertEquals(2, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->column(2);
+        $this->assertEquals(2, count($result));
+
+        $this->assertArrayHasKey(0, $result);
+        $this->assertArrayHasKey(1, $result);
+
+        $this->assertEquals(1015586, $result[0]);
+        $this->assertEquals(1039801, $result[1]);
+
+        $result = Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                'Name' => 'Krasnodar',
+                'CountryCode' => 'RUS',
+                'Population' => 881476,
+            ])
+            ->values([
+                [
+                    'Name' => 'Saratov',
+                    'CountryCode' => 'RUS',
+                    'Population' => 843460,
+                ], [
+                    'Name' => 'Tyumen',
+                    'CountryCode' => 'RUS',
+                    'Population' => 744554,
+                ]])
+            ->run();
+        $this->assertEquals(3, $result);
+
+        $result = Database::Query()
+            ->select(['Name', 'Population'])
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->all(3);
+        $this->assertEquals(3, count($result));
+
+        $this->assertArrayHasKey(0, $result);
+        $this->assertArrayHasKey(1, $result);
+        $this->assertArrayHasKey(2, $result);
+
+        $this->assertEquals(744554, $result[0]['Population']);
+        $this->assertEquals(843460, $result[1]['Population']);
+        $this->assertEquals(881476, $result[2]['Population']);
+
+        $this->assertEquals('Tyumen', $result[0]['Name']);
+        $this->assertEquals('Saratov', $result[1]['Name']);
+        $this->assertEquals('Krasnodar', $result[2]['Name']);
     }
 
 }
