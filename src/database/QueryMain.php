@@ -34,6 +34,10 @@ class QueryMain extends QueryParser
             return $this->executedRows;
         }
 
+        if ($this->_checkQueryTypeAssigned('UPDATE')) {
+            return $this->executedRows;
+        }
+
         throw new \Exception('fly\Database: Invalid query type');
     }
 
