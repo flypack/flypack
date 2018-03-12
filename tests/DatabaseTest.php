@@ -553,4 +553,25 @@ class DatabaseTest extends TestCase
         $this->assertEquals(100000, $result);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testQueryBuilderUpdate()
+    {
+        $result = Database::Query()
+            ->update('city')
+            ->set(['Population', 99000])
+            ->where(['Name', 'Perm'])
+            ->limit(1)
+            ->run();
+        $this->assertEquals(1, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->where(['Name', 'Perm'])
+            ->value();
+        $this->assertEquals(99000, $result);
+    }
+
 }
