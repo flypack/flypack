@@ -33,6 +33,10 @@ class QueryExecuter extends QueryPreparer
             $this->_executeInsert();
         }
 
+        if ($this->_checkQueryTypeAssigned('UPDATE')) {
+            $this->_executeUpdate();
+        }
+
         return $this;
     }
 
@@ -58,6 +62,16 @@ class QueryExecuter extends QueryPreparer
                 $this->executedRows += Database::SQL($this->preparedSQL[$key], $this->preparedParams[$key]);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function _executeUpdate()
+    {
+        $this->executedRows = Database::SQL($this->preparedSQL, $this->preparedParams);
 
         return $this;
     }
