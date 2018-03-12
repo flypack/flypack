@@ -99,6 +99,11 @@ class QueryChecker extends QueryStarter
         return TRUE;
     }
 
+    protected function _checkQueryTypeAvailableAndSetUpdate()
+    {
+        return $this->_checkQueryTypeAvailableAndSet('UPDATE');
+    }
+
     // Result format functions
 
     /**
