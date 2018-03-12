@@ -90,6 +90,32 @@ class QueryBuilder extends QueryValidator
         return $this;
     }
 
+    // UPDATE
+
+    /**
+     * @param string $table
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function update($table)
+    {
+        // Check query type
+        if (!$this->_checkQueryTypeAvailableAndSetUpdate()) {
+            throw new \Exception('fly\Database: Query type is not a UPDATE');
+        }
+
+        // Check table name
+        if (!$this->_isTableNameValid($table)) {
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid table name');
+        }
+
+        // Set table name to INTO part
+        $this->update = $table;
+
+        return $this;
+    }
+
     /* SELECT methods */
 
     /**
