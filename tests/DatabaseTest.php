@@ -76,7 +76,7 @@ class DatabaseTest extends TestCase
      */
     public function testSql()
     {
-        $result = Database::SQL("SELECT COUNT(*) as `count` FROM `city` WHERE `CountryCode` = 'BLR';");
+        $result = Database::SQL("SELECT COUNT(*) AS `count` FROM `city` WHERE `CountryCode` = 'BLR';");
         $this->assertEquals([0 => ['count' => 7]], $result);
 
         $result = Database::SQL("SELECT `name` FROM `city` WHERE `id` = '2';");
@@ -85,7 +85,7 @@ class DatabaseTest extends TestCase
         $result = Database::SQL("SELECT * FROM `city` WHERE `CountryCode` = 'RUS';");
         $this->assertEquals(12, count($result));
 
-        $result = Database::SQL("SELECT `id`, `Name`, `CountryCode`, (SELECT `Language` FROM `countrylanguage` `cl` WHERE `c`.`CountryCode` = `cl`.`CountryCode` AND `isOfficial` = 'T') as `language` FROM `city` `c` WHERE `id` = '8';");
+        $result = Database::SQL("SELECT `id`, `Name`, `CountryCode`, (SELECT `Language` FROM `countrylanguage` `cl` WHERE `c`.`CountryCode` = `cl`.`CountryCode` AND `isOfficial` = 'T') AS `language` FROM `city` `c` WHERE `id` = '8';");
         $this->assertEquals(1, count($result));
         $this->assertEquals(8, $result[0]['id']);
         $this->assertEquals('Moscow', $result[0]['Name']);
@@ -98,7 +98,7 @@ class DatabaseTest extends TestCase
      */
     public function testSqlWithParams()
     {
-        $result = Database::SQL("SELECT COUNT(*) as `count` FROM `city` WHERE `CountryCode` = ?;", ['RUS']);
+        $result = Database::SQL("SELECT COUNT(*) AS `count` FROM `city` WHERE `CountryCode` = ?;", ['RUS']);
         $this->assertEquals([0 => ['count' => 12]], $result);
 
         $result = Database::SQL("SELECT `name` FROM `city` WHERE `id` = ?;", [11]);
@@ -107,7 +107,7 @@ class DatabaseTest extends TestCase
         $result = Database::SQL("SELECT * FROM `city` WHERE `CountryCode` = ?;", ['BLR']);
         $this->assertEquals(7, count($result));
 
-        $result = Database::SQL("SELECT `id`, `Name`, `CountryCode`, (SELECT `Language` FROM `countrylanguage` `cl` WHERE `c`.`CountryCode` = `cl`.`CountryCode` AND `isOfficial` = ?) as `language` FROM `city` `c` WHERE `id` = ?;", ['T', '18']);
+        $result = Database::SQL("SELECT `id`, `Name`, `CountryCode`, (SELECT `Language` FROM `countrylanguage` `cl` WHERE `c`.`CountryCode` = `cl`.`CountryCode` AND `isOfficial` = ?) AS `language` FROM `city` `c` WHERE `id` = ?;", ['T', '18']);
         $this->assertEquals(1, count($result));
         $this->assertEquals(18, $result[0]['id']);
         $this->assertEquals('Rostov-on-Don', $result[0]['Name']);
@@ -528,6 +528,29 @@ class DatabaseTest extends TestCase
         $this->assertEquals('Tyumen', $result[0]['Name']);
         $this->assertEquals('Saratov', $result[1]['Name']);
         $this->assertEquals('Krasnodar', $result[2]['Name']);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSqlUpdate()
+    {
+        $result = Database::SQL("UPDATE `city` SET `Population` = ? WHERE `Name` IN (?, ?) LIMIT 2;", [100000, 'Perm', 'Rostov-on-Don']);
+        $this->assertEquals(2, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->where(['Name', 'Perm'])
+            ->value();
+        $this->assertEquals(100000, $result);
+
+        $result = Database::Query()
+            ->select('Population')
+            ->from(['city'])
+            ->where(['Name', 'Rostov-on-Don'])
+            ->value();
+        $this->assertEquals(100000, $result);
     }
 
 }

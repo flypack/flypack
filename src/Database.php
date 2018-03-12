@@ -262,10 +262,12 @@ class Database
         // get \PDOStatement
         $stmt = Connection::SQL($sql, $params);
 
-        if (mb_substr($sql, 0, 6) == 'SELECT') {
+        $sqlSubStr6 = mb_substr($sql, 0, 6);
+
+        if ($sqlSubStr6 == 'SELECT') {
             // return fetch array
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } elseif (mb_substr($sql, 0, 6) == 'INSERT') {
+        } elseif ($sqlSubStr6 == 'INSERT' || $sqlSubStr6 == 'UPDATE') {
             // return row count
             return $stmt->rowCount();
         } else {
