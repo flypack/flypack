@@ -187,6 +187,17 @@ class QueryBuilderTest extends TestCase
             0 => ['field' => 'field1', 'value' => 'value1'],
             1 => ['field' => 'field2', 'value' => 'value2'],
         ], $class->getProtectedVar('set'));
+
+        $class->prepare();
+
+        $this->assertEquals('UPDATE `test_table`', $class->getProtectedVar('prepared')['UPDATE']);
+        $this->assertEquals('SET `field1` = :value1, `field2` = :value2', $class->getProtectedVar('prepared')['SET']);
+
+        $this->assertEquals('UPDATE `test_table` SET `field1` = :value1, `field2` = :value2;', $class->getProtectedVar('preparedSQL'));
+        $this->assertEquals([
+            ':value1' => 'value1',
+            ':value2' => 'value2',
+        ], $class->getProtectedVar('preparedParams'));
     }
 
 }

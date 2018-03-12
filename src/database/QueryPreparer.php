@@ -49,6 +49,10 @@ class QueryPreparer extends QueryBuilder
             return $this->_prepareInsertValues();
         }
 
+        if ($this->_checkQueryTypeAssigned('UPDATE')) {
+            return $this->_prepareUpdate();
+        }
+
         throw new \Exception('fle\Database: Wrong query type');
     }
 
@@ -83,13 +87,28 @@ class QueryPreparer extends QueryBuilder
     }
 
     /**
+     * @return $this
+     * @throws \Exception
+     */
+    private function _prepareUpdate()
+    {
+        $this->_preparePartUpdate();
+        $this->_preparePartSet();
+        $this->_preparePartWhere();
+        $this->_preparePartOrderBy();
+        $this->_preparePartLimit();
+
+        return $this;
+    }
+
+    /**
      * Prepare SQL for execute
      *
      * @return $this
      */
     private function _prepareSQL()
     {
-        if ($this->_checkQueryTypeAssigned('SELECT')) {
+        if ($this->_checkQueryTypeAssigned('SELECT') || $this->_checkQueryTypeAssigned('UPDATE')) {
             $this->preparedSQL = trim(implode(' ', $this->prepared)) . ';';
         }
 
@@ -159,6 +178,26 @@ class QueryPreparer extends QueryBuilder
         }
 
         return '(`' . implode('`, `', $keys) . '`) VALUES (' . implode(', ', $values) . ')';
+    }
+
+    private function _preparePartUpdate()
+    {
+        $this->prepared['UPDATE'] = 'UPDATE `' . $this->update . '`';
+
+        return $this;
+    }
+
+    private function _preparePartSet()
+    {
+        $buffer = [];
+
+        foreach ($this->set as $row) {
+            $buffer[] = '`' . $row['field'] . '` = ' . $this->_setPrepareParam($row['value']);
+        }
+
+        $this->prepared['SET'] = 'SET ' . implode(', ', $buffer);
+
+        return $this;
     }
 
     /**
