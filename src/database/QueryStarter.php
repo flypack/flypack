@@ -23,6 +23,9 @@ class QueryStarter
     protected $insertInto = '';
     protected $insertValues = [];
 
+    protected $update = '';
+    protected $set = [];
+
     protected $select = [];
     protected $from = [];
     protected $where = [];
