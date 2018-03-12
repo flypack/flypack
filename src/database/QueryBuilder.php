@@ -116,6 +116,71 @@ class QueryBuilder extends QueryValidator
         return $this;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function set($data)
+    {
+        return $this->clearSet()->addSet($data);
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearSet()
+    {
+        $this->set = [];
+
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function addSet($data)
+    {
+        if (ArrayHelper::isArray2DStrong($data)) {
+            // Format: [ [field, value], [field, value], ... ]
+            foreach ($data as $item) {
+                $this->_addOneSet($item);
+            }
+        } elseif (ArrayHelper::isArrayStrong($data)) {
+            // Format: [field, value]
+            $this->_addOneSet($data);
+        } else {
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid data of SET part');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    private function _addOneSet($data)
+    {
+        // Check data array
+        if (count($data) !== 2) {
+            throw new \Exception('fly\Database: Invalid data for SET part');
+        }
+
+        $this->set[] = [
+            'field' => array_shift($data),
+            'value' => array_shift($data)
+        ];
+
+        return TRUE;
+    }
+
     /* SELECT methods */
 
     /**

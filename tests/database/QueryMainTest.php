@@ -144,4 +144,49 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals('INSERT INTO `table_1` (`key`) VALUES (:value1);', $class->getProtectedVar('preparedSQL')[2]);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testUpdateAndSet()
+    {
+        $class = new _QueryMain();
+
+        $this->assertEquals(FALSE, $class->getProtectedVar('queryType'));
+
+        $class->update('test_table');
+
+        $this->assertEquals('UPDATE', $class->getProtectedVar('queryType'));
+        $this->assertEquals('test_table', $class->getProtectedVar('update'));
+
+        $class->set(['field_name', 'new_value']);
+
+        $this->assertEquals(1, count($class->getProtectedVar('set')));
+        $this->assertEquals([
+            0 => ['field' => 'field_name', 'value' => 'new_value'],
+        ], $class->getProtectedVar('set'));
+
+        $class->addSet([
+            ['field1', 'value1'],
+            ['field2', 'value2'],
+        ]);
+
+        $this->assertEquals(3, count($class->getProtectedVar('set')));
+        $this->assertEquals([
+            0 => ['field' => 'field_name', 'value' => 'new_value'],
+            1 => ['field' => 'field1', 'value' => 'value1'],
+            2 => ['field' => 'field2', 'value' => 'value2'],
+        ], $class->getProtectedVar('set'));
+
+        $class->set([
+            ['field1', 'value1'],
+            ['field2', 'value2'],
+        ]);
+
+        $this->assertEquals(2, count($class->getProtectedVar('set')));
+        $this->assertEquals([
+            0 => ['field' => 'field1', 'value' => 'value1'],
+            1 => ['field' => 'field2', 'value' => 'value2'],
+        ], $class->getProtectedVar('set'));
+    }
+
 }
