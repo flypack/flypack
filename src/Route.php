@@ -99,10 +99,7 @@ class Route
      */
     private static function checkFileExists()
     {
-        if (!FileHelper::checkExistsFile(self::$activeRoute['file'])) {
-            return FALSE;
-        }
-        return TRUE;
+        return FileHelper::checkExistsFile(self::$activeRoute['file']);
     }
 
     private static function includeFile()
