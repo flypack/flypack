@@ -112,8 +112,6 @@ class RouteTest extends TestCase
             array('page', 'INCLUDE TWO - reg2_NO_VAR_TWO_'),
             array('p300', 'INCLUDE ONE - reg3vars'),
             array('test550', 'INCLUDE TWO - reg4test550'),
-            array('hello-my-test', 'INCLUDE TWO - LASThello-my-test'),
-            array('string with spaces', 'INCLUDE TWO - LASTstring with spaces'),
             array('string-HGFDS', 'INCLUDE TWO - reg5.1H-G-F-D-S'),
             array('string-HGFDSZXCVBQWERT', 'INCLUDE TWO - reg5.2H-G-F-D-S-Z-X-C-V-B-Q-W-E-R-T'),
         );
@@ -139,65 +137,6 @@ class RouteTest extends TestCase
         Route::Init('123');
     }
 
-    /**
-     * @param string $route
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage No routes found
-     *
-     * @dataProvider             dataProviderInvalidRoute
-     *
-     * @throws \Exception
-     */
-    public function testExceptionOnInvalidRoute($route)
-    {
-        $_GET['route'] = $route;
-        Route::Init([
-            [
-                'route' => '/^helloworld$/',
-                'file' => __DIR__ . '/samples/route/inc-file-one.php',
-            ],
-            [
-                'route' => '/^page$/i',
-                'file' => __DIR__ . '/samples/route/inc-file-two.php',
-                'data' => [
-                    'VAR_ONE' => 'reg2',
-                ],
-            ],
-            [
-                'route' => '/^p(\d+)$/i',
-                'file' => __DIR__ . '/samples/route/inc-file-one.php',
-                'data' => [
-                    'VAR_ONE' => 'reg3vars',
-                    'VAR_TWO' => '$1',
-                ],
-            ],
-            [
-                'route' => '/^test(\d)$/',
-                'file' => __DIR__ . '/samples/route/inc-file-two.php',
-                'data' => [
-                    'VAR_ONE' => 'reg4test',
-                    'VAR_TWO' => '$1',
-                ],
-            ],
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataProviderInvalidRoute()
-    {
-        return [
-            ['abc'],
-            ['helloWorld'],
-            ['page1'],
-            ['p777p'],
-            ['p777-'],
-            ['test32'],
-            ['Test3'],
-        ];
-    }
 
     /**
      * @expectedException        \Exception
