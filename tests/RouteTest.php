@@ -73,14 +73,14 @@ class RouteTest extends TestCase
     ];
 
     /**
-     * @param $query
+     * @param string $route
      *
      * @return string
      * @throws \Exception
      */
-    private function getContentAfterRoute($query)
+    private function getContentAfterRoute($route)
     {
-        $_GET['query'] = $query;
+        $_GET['route'] = $route;
         ob_start();
         Route::Init($this->testConfig);
         return ob_get_clean();
@@ -125,7 +125,7 @@ class RouteTest extends TestCase
     public function testGetQuery()
     {
         $this->getContentAfterRoute('p123');
-        $this->assertEquals('p123', Route::getQuery());
+        $this->assertEquals('p123', Route::getRoute());
     }
 
     /**
@@ -140,7 +140,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @param $query
+     * @param string $route
      *
      * @expectedException        \Exception
      * @expectedExceptionMessage No routes found
@@ -149,9 +149,9 @@ class RouteTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testExceptionOnInvalidRoute($query)
+    public function testExceptionOnInvalidRoute($route)
     {
-        $_GET['query'] = $query;
+        $_GET['route'] = $route;
         Route::Init([
             [
                 'route' => '/^helloworld$/',
@@ -207,7 +207,7 @@ class RouteTest extends TestCase
      */
     public function testExceptionOnInvalidFilePath()
     {
-        $_GET['query'] = 'helloworld';
+        $_GET['route'] = 'helloworld';
         Route::Init([
             [
                 'route' => '/^helloworld$/',

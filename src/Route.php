@@ -18,9 +18,9 @@ use fly\helpers\FileHelper;
 class Route
 {
 
-    private static $config = [];
-    private static $query = '';
-    private static $route = [
+    private static $configRoutes = [];
+    private static $route = '';
+    private static $activeRoute = [
         'file' => '',
         'data' => [],
     ];
@@ -44,13 +44,21 @@ class Route
      */
     private static function setConfig($config)
     {
-        self::$config = $config;
+        self::$configRoutes = $config;
     }
 
-    private static function setQuery()
+    /**
+     * @return string
+     */
+    public static function getRoute()
     {
-        if (isset($_GET['query'])) {
-            self::$query = trim($_GET['query']);
+        return self::$route;
+    }
+
+    private static function setRoute()
+    {
+        if (isset($_GET['route'])) {
+            self::$route = trim($_GET['route']);
         }
     }
 
@@ -59,13 +67,13 @@ class Route
      */
     private static function checkRoute()
     {
-        foreach (self::$config as $route) {
-            if (preg_match($route['route'], self::$query, $matches)) {
+        foreach (self::$configRoutes as $configRow) {
+            if (preg_match($configRow['route'], self::$route, $matches)) {
                 // found in routes
-                self::$route['file'] = $route['file'];
+                self::$activeRoute['file'] = $configRow['file'];
                 $max_match_key = max(array_keys($matches));
-                if (isset($route['data']) && is_array($route['data'])) {
-                    foreach ($route['data'] as $key => $value) {
+                if (isset($configRow['data']) && is_array($configRow['data'])) {
+                    foreach ($configRow['data'] as $key => $value) {
                         // change $1 .. $9 to values from preg_match result
                         //echo '-'.$key.'-';
                         for ($i = $max_match_key; $i >= 1; $i--) {
@@ -74,7 +82,7 @@ class Route
                             }
                         }
                         // set data to $module_data
-                        self::$route['data'][$key] = $value;
+                        self::$activeRoute['data'][$key] = $value;
                     }
                 }
                 // route found. return true
@@ -91,7 +99,7 @@ class Route
      */
     private static function checkFileExists()
     {
-        if (!FileHelper::checkExistsFile(self::$route['file'])) {
+        if (!FileHelper::checkExistsFile(self::$activeRoute['file'])) {
             return FALSE;
         }
         return TRUE;
@@ -100,12 +108,12 @@ class Route
     private static function includeFile()
     {
         // set variables
-        foreach (self::$route['data'] as $key => $value) {
+        foreach (self::$activeRoute['data'] as $key => $value) {
             $$key = $value;
         }
 
         // include file
-        include self::$route['file'];
+        include self::$activeRoute['file'];
     }
 
     /**
@@ -120,7 +128,7 @@ class Route
         }
 
         self::setConfig($config);
-        self::setQuery();
+        self::setRoute();
 
         if (!self::checkRoute()) {
             throw new \Exception('Route::Init(): No routes found');
@@ -131,14 +139,6 @@ class Route
         }
 
         self::includeFile();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getQuery()
-    {
-        return self::$query;
     }
 
 }
