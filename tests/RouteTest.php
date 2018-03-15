@@ -73,14 +73,14 @@ class RouteTest extends TestCase
     ];
 
     /**
-     * @param $query
+     * @param string $route
      *
      * @return string
      * @throws \Exception
      */
-    private function getContentAfterRoute($query)
+    private function getContentAfterRoute($route)
     {
-        $_GET['query'] = $query;
+        $_GET['route'] = $route;
         ob_start();
         Route::Init($this->testConfig);
         return ob_get_clean();
@@ -112,11 +112,47 @@ class RouteTest extends TestCase
             array('page', 'INCLUDE TWO - reg2_NO_VAR_TWO_'),
             array('p300', 'INCLUDE ONE - reg3vars'),
             array('test550', 'INCLUDE TWO - reg4test550'),
-            array('hello-my-test', 'INCLUDE TWO - LASThello-my-test'),
-            array('string with spaces', 'INCLUDE TWO - LASTstring with spaces'),
             array('string-HGFDS', 'INCLUDE TWO - reg5.1H-G-F-D-S'),
             array('string-HGFDSZXCVBQWERT', 'INCLUDE TWO - reg5.2H-G-F-D-S-Z-X-C-V-B-Q-W-E-R-T'),
         );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testGetQuery()
+    {
+        $this->getContentAfterRoute('p123');
+        $this->assertEquals('p123', Route::getRoute());
+    }
+
+    /**
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Route::Init(): Expects parameter 1 to be a valid config array
+     *
+     * @throws \Exception
+     */
+    public function testExceptionOnInvalidConfig()
+    {
+        Route::Init('123');
+    }
+
+
+    /**
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Route::Init(): No route file exists
+     *
+     * @throws \Exception
+     */
+    public function testExceptionOnInvalidFilePath()
+    {
+        $_GET['route'] = 'helloworld';
+        Route::Init([
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/no-file-exists.php',
+            ],
+        ]);
     }
 
 }

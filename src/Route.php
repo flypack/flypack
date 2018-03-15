@@ -18,11 +18,18 @@ use fly\helpers\FileHelper;
 class Route
 {
 
-    private static $config = [];
-    private static $query = '';
-    private static $route = [
+    const NOT_FOUND = 'Object not found';
+    const NOT_FOUND_DESCRIPTION = 'Sorry. The requested URL was not found on this server. Please, check your spelling and try again.';
+
+    const FORBIDDEN = 'Forbidden';
+    const FORBIDDEN_DESCRIPTION = 'Sorry. You don\'t have permission to access this URL on this server.';
+
+    private static $configRoutes = [];
+    private static $route = '';
+    private static $activeRoute = [
         'file' => '',
         'data' => [],
+        'allow' => TRUE,
     ];
 
     /**
@@ -38,19 +45,28 @@ class Route
         return TRUE;
     }
 
-
     /**
      * @param array $config
      */
     private static function setConfig($config)
     {
-        self::$config = $config;
+        self::$configRoutes = $config;
     }
 
-    private static function setQuery()
+    /**
+     * Returns active route
+     *
+     * @return string
+     */
+    public static function getRoute()
     {
-        if (isset($_GET['query'])) {
-            self::$query = trim($_GET['query']);
+        return self::$route;
+    }
+
+    private static function setRoute()
+    {
+        if (isset($_GET['route'])) {
+            self::$route = trim($_GET['route']);
         }
     }
 
@@ -59,13 +75,13 @@ class Route
      */
     private static function checkRoute()
     {
-        foreach (self::$config as $route) {
-            if (preg_match($route['route'], self::$query, $matches)) {
+        foreach (self::$configRoutes as $configRow) {
+            if (preg_match($configRow['route'], self::$route, $matches)) {
                 // found in routes
-                self::$route['file'] = $route['file'];
+                self::$activeRoute['file'] = $configRow['file'];
                 $max_match_key = max(array_keys($matches));
-                if (isset($route['data']) && is_array($route['data'])) {
-                    foreach ($route['data'] as $key => $value) {
+                if (isset($configRow['data']) && is_array($configRow['data'])) {
+                    foreach ($configRow['data'] as $key => $value) {
                         // change $1 .. $9 to values from preg_match result
                         //echo '-'.$key.'-';
                         for ($i = $max_match_key; $i >= 1; $i--) {
@@ -74,9 +90,13 @@ class Route
                             }
                         }
                         // set data to $module_data
-                        self::$route['data'][$key] = $value;
+                        self::$activeRoute['data'][$key] = $value;
                     }
                 }
+
+                // set allow option
+                self::$activeRoute['allow'] = $configRow['allow'] ?? TRUE;
+
                 // route found. return true
                 return TRUE;
             }
@@ -86,68 +106,108 @@ class Route
     }
 
     /**
+     * @since 0.3
+     *
+     * @return bool
+     */
+    private static function checkAllow()
+    {
+        if (self::$activeRoute['allow']) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    /**
      * @return bool
      * @throws \Exception
      */
     private static function checkFileExists()
     {
-        if (!FileHelper::checkExistsFile(self::$route['file'])) {
-            return FALSE;
-        }
-        return TRUE;
+        return FileHelper::checkExistsFile(self::$activeRoute['file']);
     }
 
-    /**
-     * @return bool
-     */
     private static function includeFile()
     {
         // set variables
-        foreach (self::$route['data'] as $key => $value) {
+        foreach (self::$activeRoute['data'] as $key => $value) {
             $$key = $value;
         }
+
         // include file
-        if (self::$route['file'] !== FALSE) {
-            include self::$route['file'];
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        include self::$activeRoute['file'];
     }
 
     /**
-     * @param array $config
+     * @param array $config Config of routes
      *
      * @throws \Exception
      */
     public static function Init($config = [])
     {
         if (!self::checkConfig($config)) {
+            // Invalid route config.
             throw new \Exception('Route::Init(): Expects parameter 1 to be a valid config array');
         }
 
         self::setConfig($config);
-        self::setQuery();
+        self::setRoute();
 
         if (!self::checkRoute()) {
-            throw new \Exception('Route::Init(): No routes found');
+            // Route not found in config. Generate error 404 page. Object not found.
+            self::sendGeneratedPageNotFound();
+        }
+
+        if (!self::checkAllow()) {
+            // Route is not allowed. Generate error 403 page. Forbidden.
+            self::sendGeneratedPageForbidden();
         }
 
         if (!self::checkFileExists()) {
+            // Route file not exists.
             throw new \Exception('Route::Init(): No route file exists');
         }
 
-        if (!self::includeFile()) {
-            throw new \Exception('Route::Init(): File include error');
-        }
+        self::includeFile();
     }
 
     /**
+     * Generate content for default error pages and return as string
+     *
+     * @param string $title
+     * @param string $description
+     *
+     * @since 0.3
+     *
      * @return string
      */
-    public static function getQuery()
+    protected static function getGeneratedPageContent($title, $description)
     {
-        return self::$query;
+        return '<html><head><title>' . $title . '</title><meta charset="UTF-8"></head><body><h1>' . $title . '.</h1><p>' . $description . '</p><span>This page generated by <a href="https://github.com/flypack/flypack" target="_blank">Fly Pack</a>.</span></body></html>';
+    }
+
+    /**
+     * Generate page 'Error 403. Forbidden'
+     *
+     * @since 0.3
+     */
+    protected static function sendGeneratedPageForbidden()
+    {
+        http_response_code(403);
+        echo self::getGeneratedPageContent(self::FORBIDDEN, self::FORBIDDEN_DESCRIPTION);
+        exit;
+    }
+
+    /**
+     * Generate page 'Error 404. Object not found'
+     *
+     * @since 0.3
+     */
+    protected static function sendGeneratedPageNotFound()
+    {
+        http_response_code(404);
+        echo self::getGeneratedPageContent(self::NOT_FOUND, self::NOT_FOUND_DESCRIPTION);
+        exit;
     }
 
 }
