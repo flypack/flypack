@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v0.3 (March 15, 2018)
 - Add 'allow' option for config in class `fly\Route`.
 - Add 'Error 403. Forbidden' page in class `fly\Route`.
 - Add 'Error 404. Object not found' page in class `fly\Route`.
