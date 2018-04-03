@@ -302,7 +302,7 @@ class QueryPreparer extends QueryBuilder
             return "" . $conditions[0] . " " . $conditions[2] . " " . $this->_setPrepareParam($conditions[1]);
         }
 
-        if (count($conditions) === 3 && ArrayHelper::isArray($conditions[1]) && in_array($conditions[2], ['IN'])) {
+        if (count($conditions) === 3 && ArrayHelper::isArray($conditions[1]) && in_array($conditions[2], ['IN', 'NOT IN'])) {
             foreach ($conditions[1] as $key => $condition) {
                 $conditions[1][$key] = $this->_setPrepareParam($condition);
             }

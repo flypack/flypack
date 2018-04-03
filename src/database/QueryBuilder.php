@@ -407,14 +407,17 @@ class QueryBuilder extends QueryValidator
 
         if (ArrayHelper::isArray2D($row)) {
             // two-level array
-            if (count($row) === 2 && ArrayHelper::isArray($row[1]) && count($row[1])) {
+            if ((count($row) === 2 || count($row) === 3) && ArrayHelper::isArray($row[1]) && count($row[1]) && (!isset($row[2]) || in_array($row[2], ['IN', 'NOT IN']))) {
                 // format: ['field', ['value1', 'value2', 'value3']]
+                // format: ['field', ['value1', 'value2', 'value3'], 'IN']
+                // format: ['field', ['value1', 'value2', 'value3'], 'NOT IN']
                 list($fieldName, $fieldValues) = $row;
+                $fieldOperator = $row[2] ?? 'IN';
                 if ($this->_isFieldNameValid($fieldName)) {
                     return [
                         $fieldName,
                         $fieldValues,
-                        'IN',
+                        $fieldOperator,
                     ];
                 }
             }
