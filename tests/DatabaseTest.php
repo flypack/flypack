@@ -415,6 +415,23 @@ class DatabaseTest extends TestCase
             ->orderBy(['Population'])
             ->column();
         $this->assertEquals(['Ufa', 'Yekaterinburg', 'Novosibirsk', 'Saint Petersburg'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Name', 'M%', 'LIKE'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Mogilev', 'Minsk', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 1400000, '>'])
+            ->andWhere(['Name', '%s%', 'NOT LIKE'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Ufa', 'Yekaterinburg'], $result);
     }
 
     /**

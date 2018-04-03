@@ -298,7 +298,7 @@ class QueryPreparer extends QueryBuilder
             return $conditions[0];
         }
 
-        if (count($conditions) === 3 && in_array($conditions[2], ['=', '>', '<', '>=', '<=', '<>'])) {
+        if (count($conditions) === 3 && in_array($conditions[2], ['=', '>', '<', '>=', '<=', '<>', 'LIKE', 'NOT LIKE'])) {
             return "" . $conditions[0] . " " . $conditions[2] . " " . $this->_setPrepareParam($conditions[1]);
         }
 

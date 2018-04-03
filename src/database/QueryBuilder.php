@@ -392,7 +392,7 @@ class QueryBuilder extends QueryValidator
                 $row[] = '=';
             }
 
-            if (count($row) === 3 && in_array($row[2], ['=', '>', '<', '>=', '<=', '<>'])) {
+            if (count($row) === 3 && in_array($row[2], ['=', '>', '<', '>=', '<=', '<>', 'LIKE', 'NOT LIKE'])) {
                 // format: ['field', 'value', '?']
                 list($fieldName, $fieldValue, $fieldOperator) = $row;
                 if ($this->_isFieldNameValid($fieldName)) {
