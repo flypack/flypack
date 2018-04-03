@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase
 
     protected function tearDown()
     {
-        $this->deleteTables();
+        //$this->deleteTables();
 
         parent::tearDown();
     }
@@ -340,6 +340,64 @@ class DatabaseTest extends TestCase
             ->clearWhere()
             ->all();
         $this->assertEquals(19, count($result));
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 535229, '='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Gomel'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2000000, '>'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 300000, '<'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Bobruisk'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 5356755, '>='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Saint Petersburg', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2645500, '>='])
+            ->andWhere(['Population', 5356755, '<='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2645500, '>='])
+            ->andWhere(['Population', 5356755, '<>'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', [2645500, 5356755]])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg'], $result);
     }
 
     /**
