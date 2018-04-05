@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## Unreleased
+- Add function support in select part to Query Builder.
 - Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
 - Add multi file support for config in class `fly\Route`.
 
