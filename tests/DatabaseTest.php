@@ -500,6 +500,18 @@ class DatabaseTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testQueryBuilderSelectWithFuncAndAlias()
+    {
+        $result = Database::Query()
+            ->select([['COUNT(*)', 'COUNT']])
+            ->from('city')
+            ->value();
+        $this->assertEquals(19, $result);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testSqlInsert()
     {
         $result = Database::SQL("INSERT INTO `city` (`Name`,`CountryCode`,`Population`) VALUES (?,?,?);", ['Mazyr', 'BLR', 111801]);

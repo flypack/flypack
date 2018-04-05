@@ -204,50 +204,56 @@ class QueryBuilder extends QueryValidator
 
     /**
      * Add field or fields for select query
-     * Format: '*' OR 'field' OR ['field1', 'field2', ... ]
      *
-     * @param string|array $data
+     * Format: 'field'
+     * Format: ['field1', 'field2', ... ]
+     * Format: [ ['func()', 'alias'], ['table.field', 'alias'], ['field', 'alias'], ['table.field'], ['field'] ]
+     *
+     * @param string|array $input
      *
      * @return $this
      * @throws \Exception
      */
-    public function addSelect($data = '*')
+    public function addSelect($input = '*')
     {
         // Check query type
         if (!$this->_checkQueryTypeAvailableAndSetSelect()) {
             throw new \Exception('fly\Database: Query type is not a SELECT');
         }
 
-        // TODO: rewrite this part of method
+        if (!ArrayHelper::isArray($input) && is_string($input)) {
+            // Format: 'field'
+            // Reformat to 2D strong array
+            $input = [[trim($input)]];
+        }
 
-        if (ArrayHelper::isArrayStrong($data)) {
-            // it is one-level array of new fields
-            foreach ($data as $field) {
-                if ($this->_isFieldNameValid($field)) {
-                    $this->select[] = $field;
-                } else {
-                    throw new \Exception('fly\Database: Field name in method addSelect() is not valid');
+        if (ArrayHelper::isArrayStrong($input)) {
+            // Format: ['field1', 'field2', ... ]
+            // Reformat to 2D strong array
+            foreach ($input as $key => $inputItem) {
+                $input[$key] = [trim($inputItem)];
+            }
+        }
+
+        if (ArrayHelper::isArray2DStrong($input)) {
+            // Format: [ ['func()', 'alias'], ['table.field', 'alias'], ['field', 'alias'], ['table.field'], ['field'] ]
+            foreach ($input as $inputItem) {
+                if (ArrayHelper::isArray($inputItem)) {
+                    if (count($inputItem) === 2) {
+                        $field = array_shift($inputItem);
+                        $alias = array_shift($inputItem);
+                        $this->select[] = [$field, $alias];
+                    } elseif (count($inputItem) === 1) {
+                        $field = array_shift($inputItem);
+                        $this->select[] = [$field];
+                    } else {
+                        throw new \Exception('fly\Database: Invalid input data for SELECT part');
+                    }
                 }
             }
-
-            return $this;
         }
 
-        if (!ArrayHelper::isArray($data) && $this->_isFieldNameValid($data)) {
-            // it is a one field
-            $this->select[] = $data;
-
-            return $this;
-        }
-
-        if ($data === '*') {
-            // all fields
-            $this->select = ['*'];
-
-            return $this;
-        }
-
-        throw new \Exception('fly\Database: Expects parameter 1 to be a valid data array');
+        return $this;
     }
 
     /**

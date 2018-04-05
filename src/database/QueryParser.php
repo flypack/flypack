@@ -44,13 +44,15 @@ class QueryParser extends QueryExecuter
             case 'COLUMN':
                 if (count($this->executed['main'])) {
                     foreach ($this->executed['main'] as $i => $buf) {
-                        $this->parsed[] = $this->executed['main'][$i][$this->select[0]];
+                        $fieldOrAlias = $this->select[0][1] ?? $this->select[0][0];
+                        $this->parsed[] = $this->executed['main'][$i][$fieldOrAlias];
                     }
                 }
                 break;
             case 'VALUE':
                 if (count($this->executed['main'])) {
-                    $this->parsed = $this->executed['main'][0][$this->select[0]];
+                    $fieldOrAlias = $this->select[0][1] ?? $this->select[0][0];
+                    $this->parsed = $this->executed['main'][0][$fieldOrAlias];
                 }
                 break;
         }

@@ -210,10 +210,11 @@ class QueryPreparer extends QueryBuilder
         $buffer = [];
 
         foreach ($this->select as $row) {
-            if ($row === '*') {
-                $buffer[] = '*';
+            if (count($row) === 2) {
+                // ['func/field', 'alias']
+                $buffer[] = implode(' AS ', $row);
             } else {
-                $buffer[] = '`' . str_replace('.', '`.`', $row) . '`';
+                $buffer[] = $row[0];
             }
         }
 
