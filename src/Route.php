@@ -75,6 +75,11 @@ class Route
      */
     private static function checkRoute()
     {
+        self::$activeRoute = [
+            'file' => '',
+            'data' => [],
+            'allow' => TRUE,
+        ];
         foreach (self::$configRoutes as $configRow) {
             if (preg_match($configRow['route'], self::$route, $matches)) {
                 // found in routes
@@ -124,7 +129,16 @@ class Route
      */
     private static function checkFileExists()
     {
-        return FileHelper::checkExistsFile(self::$activeRoute['file']);
+        if (is_array(self::$activeRoute['file'])) {
+            foreach (self::$activeRoute['file'] as $file) {
+                if (!FileHelper::checkExistsFile($file)) {
+                    return FALSE;
+                }
+            }
+            return TRUE;
+        } else {
+            return FileHelper::checkExistsFile(self::$activeRoute['file']);
+        }
     }
 
     private static function includeFile()
@@ -135,7 +149,13 @@ class Route
         }
 
         // include file
-        include self::$activeRoute['file'];
+        if (is_array(self::$activeRoute['file'])) {
+            foreach (self::$activeRoute['file'] as $file) {
+                include $file;
+            }
+        } else {
+            include self::$activeRoute['file'];
+        }
     }
 
     /**
