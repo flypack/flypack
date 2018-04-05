@@ -2,6 +2,7 @@
 
 ## Unreleased
 - Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
+- Add multi file support for config in class `fly\Route`.
 
 ## v0.3 (March 15, 2018)
 - Add 'allow' option for config in class `fly\Route`.
