@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase
 
     protected function tearDown()
     {
-        //$this->deleteTables();
+        $this->deleteTables();
 
         parent::tearDown();
     }
