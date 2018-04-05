@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Unreleased
+- Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
+
 ## v0.3 (March 15, 2018)
 - Add 'allow' option for config in class `fly\Route`.
 - Add 'Error 403. Forbidden' page in class `fly\Route`.
