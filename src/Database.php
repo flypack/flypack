@@ -267,7 +267,7 @@ class Database
         if ($sqlSubStr6 == 'SELECT') {
             // return fetch array
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } elseif ($sqlSubStr6 == 'INSERT' || $sqlSubStr6 == 'UPDATE') {
+        } elseif ($sqlSubStr6 == 'INSERT' || $sqlSubStr6 == 'UPDATE' || $sqlSubStr6 == 'DELETE') {
             // return row count
             return $stmt->rowCount();
         } else {
