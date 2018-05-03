@@ -33,6 +33,7 @@ class Database
         'charset' => 'utf8',
     ];
     private static $opt;
+    private static $count = 0;
 
     /**
      * Validate database connection type
@@ -238,6 +239,8 @@ class Database
             return FALSE;
         }
 
+        self::$count = 0;
+
         return TRUE;
     }
 
@@ -262,6 +265,8 @@ class Database
         // get \PDOStatement
         $stmt = Connection::SQL($sql, $params);
 
+        self::$count++;
+
         $sqlSubStr6 = mb_substr($sql, 0, 6);
 
         if ($sqlSubStr6 == 'SELECT') {
@@ -275,6 +280,11 @@ class Database
         }
 
         return $result;
+    }
+
+    public static function getCount()
+    {
+        return self::$count;
     }
 
     public static function Query()

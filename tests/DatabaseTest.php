@@ -678,4 +678,63 @@ class DatabaseTest extends TestCase
         $this->assertEquals(99000, $result);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testGetCount()
+    {
+        // Reconnect to database
+        Database::Close();
+        Database::Connect([
+            'database' => $this->database,
+        ]);
+
+        $this->assertEquals(0, Database::getCount());
+
+        Database::SQL("INSERT INTO `city` (`Name`,`CountryCode`,`Population`) VALUES (?,?,?);", ['Mazyr', 'BLR', 111801]);
+        $this->assertEquals(1, Database::getCount());
+
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                'Name' => 'Krasnoyarsk',
+                'CountryCode' => 'RUS',
+                'Population' => 1082933,
+            ])
+            ->run();
+        $this->assertEquals(2, Database::getCount());
+
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                [
+                    'Name' => 'Voronezh',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1039801,
+                ], [
+                    'Name' => 'Volgograd',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1015586,
+                ]])
+            ->run();
+        $this->assertEquals(4, Database::getCount());
+
+        Database::Query()
+            ->update('city')
+            ->set(['Population', 99000])
+            ->where(['Name', 'Perm'])
+            ->limit(1)
+            ->run();
+        $this->assertEquals(5, Database::getCount());
+
+        Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(6, Database::getCount());
+    }
+
 }
