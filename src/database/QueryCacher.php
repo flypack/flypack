@@ -27,4 +27,15 @@ class QueryCacher extends QueryPreparer
         return Database::getCacheDefault();
     }
 
+    /**
+     * @param string $sql
+     * @param array  $params
+     *
+     * @return string
+     */
+    protected function getCacheHash($sql, $params)
+    {
+        return md5($sql) . md5(serialize($params));
+    }
+
 }
