@@ -313,4 +313,14 @@ class Database
         self::$cache = $cache;
     }
 
+    /**
+     * Set default cache status to TRUE
+     *
+     * @throws \Exception
+     */
+    public static function setCacheDefaultTrue()
+    {
+        return self::setCacheDefault(TRUE);
+    }
+
 }
