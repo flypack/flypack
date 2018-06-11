@@ -12,7 +12,19 @@
 
 namespace fly\database;
 
+use fly\Database;
+
 class QueryCacher extends QueryPreparer
 {
+
+    /**
+     * Get cache status for this query
+     *
+     * @return bool
+     */
+    protected function getCacheStatus()
+    {
+        return Database::getCacheDefault();
+    }
 
 }
