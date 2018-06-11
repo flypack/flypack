@@ -737,4 +737,31 @@ class DatabaseTest extends TestCase
         $this->assertEquals(6, Database::getCount());
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testCache()
+    {
+        // Reconnect to database
+        Database::Close();
+        Database::Connect([
+            'database' => $this->database,
+        ]);
+
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+        Database::setCacheDefaultTrue();
+        $this->assertEquals(TRUE, Database::getCacheDefault());
+
+        Database::setCacheDefaultFalse();
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+        Database::setCacheDefault(TRUE);
+        $this->assertEquals(TRUE, Database::getCacheDefault());
+
+        Database::setCacheDefault(FALSE);
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+    }
+
 }
