@@ -5,6 +5,7 @@
 - Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
 - Add multi file support for config in class `fly\Route`.
 - Add SQL counter to `fly\Database`.
+- Add query cache to `fly\Database`.
 
 ## v0.3 (March 15, 2018)
 - Add 'allow' option for config in class `fly\Route`.
