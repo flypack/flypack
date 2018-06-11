@@ -41,6 +41,11 @@ class Database
     private static $cache = FALSE;
 
     /**
+     * @var array Storage var for query cache data
+     */
+    public static $cacheStorage = [];
+
+    /**
      * Validate database connection type
      *
      * @param string $type
