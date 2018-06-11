@@ -287,6 +287,11 @@ class Database
         return $result;
     }
 
+    /**
+     * @since  0.4
+     *
+     * @return int
+     */
     public static function getCount()
     {
         return self::$count;
@@ -298,6 +303,7 @@ class Database
     }
 
     /**
+     * @since  0.4
      * @return bool
      */
     public static function getCacheDefault()
@@ -310,6 +316,7 @@ class Database
      *
      * @param bool $cache
      *
+     * @since  0.4
      * @return bool
      * @throws \Exception
      */
@@ -330,6 +337,7 @@ class Database
     /**
      * Set default cache status to TRUE
      *
+     * @since  0.4
      * @return bool
      * @throws \Exception
      */
@@ -341,6 +349,7 @@ class Database
     /**
      * Set default cache status to FALSE
      *
+     * @since  0.4
      * @return bool
      * @throws \Exception
      */
