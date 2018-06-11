@@ -38,4 +38,23 @@ class QueryCacher extends QueryPreparer
         return md5($sql) . md5(serialize($params));
     }
 
+    protected function getExecutedCachedData()
+    {
+        $hash = $this->getCacheHash($this->preparedSQL, $this->preparedParams);
+
+        if (!isset(Database::$cacheStorage[$hash])) {
+            // hash not found, return false
+            return FALSE;
+        }
+
+        foreach (Database::$cacheStorage[$hash] as $row) {
+            if ($row['sql'] === $this->preparedSQL && $row['params'] === $this->preparedParams) {
+                return $row['data'];
+            }
+        }
+
+        // no equal query
+        return FALSE;
+    }
+
 }
