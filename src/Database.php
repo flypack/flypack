@@ -323,4 +323,14 @@ class Database
         return self::setCacheDefault(TRUE);
     }
 
+    /**
+     * Set default cache status to FALSE
+     *
+     * @throws \Exception
+     */
+    public static function setCacheDefaultFalse()
+    {
+        return self::setCacheDefault(FALSE);
+    }
+
 }
