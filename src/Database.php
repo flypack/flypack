@@ -297,4 +297,20 @@ class Database
         return new QueryMain();
     }
 
+    /**
+     * Set default cache status
+     *
+     * @param bool $cache
+     *
+     * @throws \Exception
+     */
+    public static function setCacheDefault($cache)
+    {
+        if (!is_bool($cache)) {
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid default cache status');
+        }
+
+        self::$cache = $cache;
+    }
+
 }
