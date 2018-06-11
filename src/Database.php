@@ -36,6 +36,11 @@ class Database
     private static $count = 0;
 
     /**
+     * @var bool Default value for query cache status
+     */
+    private static $cache = FALSE;
+
+    /**
      * Validate database connection type
      *
      * @param string $type
