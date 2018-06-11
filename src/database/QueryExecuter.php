@@ -14,7 +14,7 @@ namespace fly\database;
 
 use fly\Database;
 
-class QueryExecuter extends QueryPreparer
+class QueryExecuter extends QueryCacher
 {
 
     /**
