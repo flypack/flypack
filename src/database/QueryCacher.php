@@ -57,4 +57,20 @@ class QueryCacher extends QueryPreparer
         return FALSE;
     }
 
+    protected function cacheExecutedData($data)
+    {
+        $hash = $this->getCacheHash($this->preparedSQL, $this->preparedParams);
+
+        if (!isset(Database::$cacheStorage[$hash])) {
+            // hash not found, create
+            Database::$cacheStorage[$hash] = [];
+        }
+
+        Database::$cacheStorage[$hash][] = [
+            'sql' => $this->preparedSQL,
+            'params' => $this->preparedParams,
+            'data' => $data,
+        ];
+    }
+
 }
