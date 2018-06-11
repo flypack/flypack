@@ -298,6 +298,14 @@ class Database
     }
 
     /**
+     * @return bool
+     */
+    public static function getCacheDefault()
+    {
+        return self::$cache;
+    }
+
+    /**
      * Set default cache status
      *
      * @param bool $cache
@@ -316,7 +324,7 @@ class Database
         self::$cache = $cache;
 
         // return actual status
-        return self::$cache;
+        return self::getCacheDefault();
     }
 
     /**
