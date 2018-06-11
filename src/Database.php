@@ -302,20 +302,27 @@ class Database
      *
      * @param bool $cache
      *
+     * @return bool
      * @throws \Exception
      */
     public static function setCacheDefault($cache)
     {
         if (!is_bool($cache)) {
+            // cache status must be a bool value
             throw new \Exception('fly\Database: Expects parameter 1 to be a valid default cache status');
         }
 
+        // set default cache status
         self::$cache = $cache;
+
+        // return actual status
+        return self::$cache;
     }
 
     /**
      * Set default cache status to TRUE
      *
+     * @return bool
      * @throws \Exception
      */
     public static function setCacheDefaultTrue()
@@ -326,6 +333,7 @@ class Database
     /**
      * Set default cache status to FALSE
      *
+     * @return bool
      * @throws \Exception
      */
     public static function setCacheDefaultFalse()
