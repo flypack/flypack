@@ -1,10 +1,10 @@
 # CHANGELOG
 
 ## Unreleased
+- Add SQL counter to `fly\Database`.
 - Add function support in select part to Query Builder.
 - Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
 - Add multi file support for config in class `fly\Route`.
-- Add SQL counter to `fly\Database`.
 - Add custom 'Error 403. Forbidden' page in class `fly\Route`.
 - Add custom 'Error 404. Object not found' page in class `fly\Route`.
 
