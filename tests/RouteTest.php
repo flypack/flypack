@@ -228,4 +228,20 @@ class RouteTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testCustomPageForError404()
+    {
+        $config = [
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+            ],
+            'Error404' => __DIR__ . '/samples/route/inc-error-404.php',
+        ];
+
+        $this->assertEquals('ERROR PAGE NOT FOUND 404', $this->getContentAfterRoute($config, 'qwe789'));
+    }
+
 }
