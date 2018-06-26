@@ -178,11 +178,13 @@ class Route
         if (!self::checkRoute()) {
             // Route not found in config. Generate error 404 page. Object not found.
             self::sendGeneratedPageNotFound();
+            return;
         }
 
         if (!self::checkAllow()) {
             // Route is not allowed. Generate error 403 page. Forbidden.
             self::sendGeneratedPageForbidden();
+            return;
         }
 
         if (!self::checkFileExists()) {
