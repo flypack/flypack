@@ -214,12 +214,20 @@ class Route
      * Generate page 'Error 403. Forbidden'
      *
      * @since 0.3
+     * @throws \Exception
      */
     protected static function sendGeneratedPageForbidden()
     {
         http_response_code(403);
-        echo self::getGeneratedPageContent(self::FORBIDDEN, self::FORBIDDEN_DESCRIPTION);
-        exit;
+        if (!isset(self::$configRoutes['Error403'])) {
+            echo self::getGeneratedPageContent(self::FORBIDDEN, self::FORBIDDEN_DESCRIPTION);
+        } else {
+            if (!FileHelper::checkExistsFile(self::$configRoutes['Error403'])) {
+                throw new \Exception('Route::Init(): No custom error 403 file exists');
+            }
+            include self::$configRoutes['Error403'];
+        }
+        return;
     }
 
     /**
