@@ -81,29 +81,31 @@ class Route
             'allow' => TRUE,
         ];
         foreach (self::$configRoutes as $configRow) {
-            if (preg_match($configRow['route'], self::$route, $matches)) {
-                // found in routes
-                self::$activeRoute['file'] = $configRow['file'];
-                $max_match_key = max(array_keys($matches));
-                if (isset($configRow['data']) && is_array($configRow['data'])) {
-                    foreach ($configRow['data'] as $key => $value) {
-                        // change $1 .. $9 to values from preg_match result
-                        //echo '-'.$key.'-';
-                        for ($i = $max_match_key; $i >= 1; $i--) {
-                            if (isset($matches[$i])) {
-                                $value = str_replace('$' . $i, $matches[$i], $value);
+            if (is_array($configRow)) {
+                if (preg_match($configRow['route'], self::$route, $matches)) {
+                    // found in routes
+                    self::$activeRoute['file'] = $configRow['file'];
+                    $max_match_key = max(array_keys($matches));
+                    if (isset($configRow['data']) && is_array($configRow['data'])) {
+                        foreach ($configRow['data'] as $key => $value) {
+                            // change $1 .. $9 to values from preg_match result
+                            //echo '-'.$key.'-';
+                            for ($i = $max_match_key; $i >= 1; $i--) {
+                                if (isset($matches[$i])) {
+                                    $value = str_replace('$' . $i, $matches[$i], $value);
+                                }
                             }
+                            // set data to $module_data
+                            self::$activeRoute['data'][$key] = $value;
                         }
-                        // set data to $module_data
-                        self::$activeRoute['data'][$key] = $value;
                     }
+
+                    // set allow option
+                    self::$activeRoute['allow'] = $configRow['allow'] ?? TRUE;
+
+                    // route found. return true
+                    return TRUE;
                 }
-
-                // set allow option
-                self::$activeRoute['allow'] = $configRow['allow'] ?? TRUE;
-
-                // route found. return true
-                return TRUE;
             }
         }
         // if route not found - return false
@@ -222,12 +224,20 @@ class Route
      * Generate page 'Error 404. Object not found'
      *
      * @since 0.3
+     * @throws \Exception
      */
     protected static function sendGeneratedPageNotFound()
     {
         http_response_code(404);
-        echo self::getGeneratedPageContent(self::NOT_FOUND, self::NOT_FOUND_DESCRIPTION);
-        exit;
+        if (!isset(self::$configRoutes['Error404'])) {
+            echo self::getGeneratedPageContent(self::NOT_FOUND, self::NOT_FOUND_DESCRIPTION);
+        } else {
+            if (!FileHelper::checkExistsFile(self::$configRoutes['Error404'])) {
+                throw new \Exception('Route::Init(): No custom error 404 file exists');
+            }
+            include self::$configRoutes['Error404'];
+        }
+        return;
     }
 
 }
