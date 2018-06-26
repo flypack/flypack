@@ -244,4 +244,21 @@ class RouteTest extends TestCase
         $this->assertEquals('ERROR PAGE NOT FOUND 404', $this->getContentAfterRoute($config, 'qwe789'));
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testCustomPageForError403()
+    {
+        $config = [
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+                'allow' => FALSE,
+            ],
+            'Error403' => __DIR__ . '/samples/route/inc-error-403.php',
+        ];
+
+        $this->assertEquals('ERROR PAGE FORBIDDEN 403', $this->getContentAfterRoute($config, 'helloworld'));
+    }
+
 }
