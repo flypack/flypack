@@ -340,6 +340,98 @@ class DatabaseTest extends TestCase
             ->clearWhere()
             ->all();
         $this->assertEquals(19, count($result));
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 535229, '='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Gomel'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2000000, '>'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 300000, '<'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Bobruisk'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 5356755, '>='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Saint Petersburg', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2645500, '>='])
+            ->andWhere(['Population', 5356755, '<='])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 2645500, '>='])
+            ->andWhere(['Population', 5356755, '<>'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', [2645500, 5356755]])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Saint Petersburg'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Name', ['Minsk', 'Moscow'], 'IN'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Minsk', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 1400000, '>'])
+            ->andWhere(['Name', ['Minsk', 'Moscow'], 'NOT IN'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Ufa', 'Yekaterinburg', 'Novosibirsk', 'Saint Petersburg'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Name', 'M%', 'LIKE'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Mogilev', 'Minsk', 'Moscow'], $result);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from('city')
+            ->where(['Population', 1400000, '>'])
+            ->andWhere(['Name', '%s%', 'NOT LIKE'])
+            ->orderBy(['Population'])
+            ->column();
+        $this->assertEquals(['Ufa', 'Yekaterinburg'], $result);
     }
 
     /**
@@ -403,6 +495,18 @@ class DatabaseTest extends TestCase
             ->from(['city'])
             ->all([17, 3]);
         $this->assertEquals(2, count($result));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testQueryBuilderSelectWithFuncAndAlias()
+    {
+        $result = Database::Query()
+            ->select([['COUNT(*)', 'COUNT']])
+            ->from('city')
+            ->value();
+        $this->assertEquals(19, $result);
     }
 
     /**
@@ -572,6 +676,145 @@ class DatabaseTest extends TestCase
             ->where(['Name', 'Perm'])
             ->value();
         $this->assertEquals(99000, $result);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testGetCount()
+    {
+        // Reconnect to database
+        Database::Close();
+        Database::Connect([
+            'database' => $this->database,
+        ]);
+
+        $this->assertEquals(0, Database::getCount());
+
+        Database::SQL("INSERT INTO `city` (`Name`,`CountryCode`,`Population`) VALUES (?,?,?);", ['Mazyr', 'BLR', 111801]);
+        $this->assertEquals(1, Database::getCount());
+
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                'Name' => 'Krasnoyarsk',
+                'CountryCode' => 'RUS',
+                'Population' => 1082933,
+            ])
+            ->run();
+        $this->assertEquals(2, Database::getCount());
+
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                [
+                    'Name' => 'Voronezh',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1039801,
+                ], [
+                    'Name' => 'Volgograd',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1015586,
+                ]])
+            ->run();
+        $this->assertEquals(4, Database::getCount());
+
+        Database::Query()
+            ->update('city')
+            ->set(['Population', 99000])
+            ->where(['Name', 'Perm'])
+            ->limit(1)
+            ->run();
+        $this->assertEquals(5, Database::getCount());
+
+        Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(6, Database::getCount());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCache()
+    {
+        // Reconnect to database
+        Database::Close();
+        Database::Connect([
+            'database' => $this->database,
+        ]);
+
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+        Database::setCacheDefaultTrue();
+        $this->assertEquals(TRUE, Database::getCacheDefault());
+
+        Database::setCacheDefaultFalse();
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+        Database::setCacheDefault(TRUE);
+        $this->assertEquals(TRUE, Database::getCacheDefault());
+
+        Database::setCacheDefault(FALSE);
+        $this->assertEquals(FALSE, Database::getCacheDefault());
+
+        $this->assertEquals(0, Database::getCount());
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(1, Database::getCount());
+        $this->assertEquals('Minsk', $result[0]);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(2, Database::getCount());
+        $this->assertEquals('Minsk', $result[0]);
+
+        Database::setCacheDefaultTrue();
+        $this->assertEquals(TRUE, Database::getCacheDefault());
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(3, Database::getCount());
+        $this->assertEquals('Minsk', $result[0]);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy('id')
+            ->column();
+        $this->assertEquals(3, Database::getCount());
+        $this->assertEquals('Minsk', $result[0]);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->column();
+        $this->assertEquals(4, Database::getCount());
+        $this->assertEquals('Perm', $result[0]);
+
+        $result = Database::Query()
+            ->select('Name')
+            ->from(['city'])
+            ->orderBy(['id', 'DESC'])
+            ->column();
+        $this->assertEquals(4, Database::getCount());
+        $this->assertEquals('Perm', $result[0]);
+
     }
 
 }

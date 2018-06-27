@@ -107,7 +107,7 @@ class QueryMain extends QueryParser
         }
 
         // Check count of select fields
-        if (!count($this->select) || count($this->select) > 1 || $this->select[0] === '*') {
+        if (!count($this->select) || count($this->select) > 1 || $this->select[0][0] === '*') {
             throw new \Exception('fly\Database: Query result format COLUMN require only one field in SELECT part');
         }
 
@@ -136,7 +136,7 @@ class QueryMain extends QueryParser
         }
 
         // Check count of select fields
-        if (!count($this->select) || count($this->select) > 1 || $this->select[0] === '*') {
+        if (!count($this->select) || count($this->select) > 1 || $this->select[0][0] === '*') {
             throw new \Exception('fly\Database: Query result format VALUE require only one field in SELECT part');
         }
 

@@ -72,17 +72,63 @@ class RouteTest extends TestCase
         ],
     ];
 
+    private $testConfigMultiFile = [
+        [
+            'route' => '/^test-multi-one$/',
+            'file' => [
+                __DIR__ . '/samples/route/inc-file-one.php',
+            ],
+        ],
+        [
+            'route' => '/^test-multi-two$/',
+            'file' => [
+                __DIR__ . '/samples/route/inc-file-one.php',
+                __DIR__ . '/samples/route/inc-file-two.php',
+            ],
+        ],
+        [
+            'route' => '/^test-multi-three$/',
+            'file' => [
+                __DIR__ . '/samples/route/inc-file-one.php',
+                __DIR__ . '/samples/route/inc-file-two.php',
+                __DIR__ . '/samples/route/inc-file-two.php',
+            ],
+        ],
+        [
+            'route' => '/^test-multi-two-with-vars$/',
+            'file' => [
+                __DIR__ . '/samples/route/inc-file-one.php',
+                __DIR__ . '/samples/route/inc-file-two.php',
+            ],
+            'data' => [
+                'VAR_ONE' => 'reg7',
+            ],
+        ],
+        [
+            'route' => '/^test-multi-two-with-vars-(\d+)$/',
+            'file' => [
+                __DIR__ . '/samples/route/inc-file-one.php',
+                __DIR__ . '/samples/route/inc-file-two.php',
+            ],
+            'data' => [
+                'VAR_ONE' => 'reg8',
+                'VAR_TWO' => '$1',
+            ],
+        ],
+    ];
+
     /**
+     * @param array  $config
      * @param string $route
      *
      * @return string
      * @throws \Exception
      */
-    private function getContentAfterRoute($route)
+    private function getContentAfterRoute($config, $route)
     {
         $_GET['route'] = $route;
         ob_start();
-        Route::Init($this->testConfig);
+        Route::Init($config);
         return ob_get_clean();
     }
 
@@ -99,7 +145,7 @@ class RouteTest extends TestCase
      */
     public function testInit($query, $expected)
     {
-        $this->assertEquals($expected, $this->getContentAfterRoute($query));
+        $this->assertEquals($expected, $this->getContentAfterRoute($this->testConfig, $query));
     }
 
     /**
@@ -118,11 +164,38 @@ class RouteTest extends TestCase
     }
 
     /**
+     * @param $query
+     * @param $expected
+     *
+     * @dataProvider dataProviderInitMultiFile
+     *
+     * @throws \Exception
+     */
+    public function testInitMultiFile($query, $expected)
+    {
+        $this->assertEquals($expected, $this->getContentAfterRoute($this->testConfigMultiFile, $query));
+    }
+
+    /**
+     * @return array of [query, result]
+     */
+    public function dataProviderInitMultiFile()
+    {
+        return array(
+            array('test-multi-one', 'INCLUDE ONE - _NO_VAR_ONE_'),
+            array('test-multi-two', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'),
+            array('test-multi-three', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'),
+            array('test-multi-two-with-vars', 'INCLUDE ONE - reg7INCLUDE TWO - reg7_NO_VAR_TWO_'),
+            array('test-multi-two-with-vars-725', 'INCLUDE ONE - reg8INCLUDE TWO - reg8725'),
+        );
+    }
+
+    /**
      * @throws \Exception
      */
     public function testGetQuery()
     {
-        $this->getContentAfterRoute('p123');
+        $this->getContentAfterRoute($this->testConfig, 'p123');
         $this->assertEquals('p123', Route::getRoute());
     }
 
@@ -153,6 +226,39 @@ class RouteTest extends TestCase
                 'file' => __DIR__ . '/samples/route/no-file-exists.php',
             ],
         ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCustomPageForError404()
+    {
+        $config = [
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+            ],
+            'Error404' => __DIR__ . '/samples/route/inc-error-404.php',
+        ];
+
+        $this->assertEquals('ERROR PAGE NOT FOUND 404', $this->getContentAfterRoute($config, 'qwe789'));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCustomPageForError403()
+    {
+        $config = [
+            [
+                'route' => '/^helloworld$/',
+                'file' => __DIR__ . '/samples/route/inc-file-one.php',
+                'allow' => FALSE,
+            ],
+            'Error403' => __DIR__ . '/samples/route/inc-error-403.php',
+        ];
+
+        $this->assertEquals('ERROR PAGE FORBIDDEN 403', $this->getContentAfterRoute($config, 'helloworld'));
     }
 
 }

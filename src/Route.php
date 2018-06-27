@@ -75,30 +75,37 @@ class Route
      */
     private static function checkRoute()
     {
+        self::$activeRoute = [
+            'file' => '',
+            'data' => [],
+            'allow' => TRUE,
+        ];
         foreach (self::$configRoutes as $configRow) {
-            if (preg_match($configRow['route'], self::$route, $matches)) {
-                // found in routes
-                self::$activeRoute['file'] = $configRow['file'];
-                $max_match_key = max(array_keys($matches));
-                if (isset($configRow['data']) && is_array($configRow['data'])) {
-                    foreach ($configRow['data'] as $key => $value) {
-                        // change $1 .. $9 to values from preg_match result
-                        //echo '-'.$key.'-';
-                        for ($i = $max_match_key; $i >= 1; $i--) {
-                            if (isset($matches[$i])) {
-                                $value = str_replace('$' . $i, $matches[$i], $value);
+            if (is_array($configRow)) {
+                if (preg_match($configRow['route'], self::$route, $matches)) {
+                    // found in routes
+                    self::$activeRoute['file'] = $configRow['file'];
+                    $max_match_key = max(array_keys($matches));
+                    if (isset($configRow['data']) && is_array($configRow['data'])) {
+                        foreach ($configRow['data'] as $key => $value) {
+                            // change $1 .. $9 to values from preg_match result
+                            //echo '-'.$key.'-';
+                            for ($i = $max_match_key; $i >= 1; $i--) {
+                                if (isset($matches[$i])) {
+                                    $value = str_replace('$' . $i, $matches[$i], $value);
+                                }
                             }
+                            // set data to $module_data
+                            self::$activeRoute['data'][$key] = $value;
                         }
-                        // set data to $module_data
-                        self::$activeRoute['data'][$key] = $value;
                     }
+
+                    // set allow option
+                    self::$activeRoute['allow'] = $configRow['allow'] ?? TRUE;
+
+                    // route found. return true
+                    return TRUE;
                 }
-
-                // set allow option
-                self::$activeRoute['allow'] = $configRow['allow'] ?? TRUE;
-
-                // route found. return true
-                return TRUE;
             }
         }
         // if route not found - return false
@@ -124,7 +131,16 @@ class Route
      */
     private static function checkFileExists()
     {
-        return FileHelper::checkExistsFile(self::$activeRoute['file']);
+        if (is_array(self::$activeRoute['file'])) {
+            foreach (self::$activeRoute['file'] as $file) {
+                if (!FileHelper::checkExistsFile($file)) {
+                    return FALSE;
+                }
+            }
+            return TRUE;
+        } else {
+            return FileHelper::checkExistsFile(self::$activeRoute['file']);
+        }
     }
 
     private static function includeFile()
@@ -135,7 +151,13 @@ class Route
         }
 
         // include file
-        include self::$activeRoute['file'];
+        if (is_array(self::$activeRoute['file'])) {
+            foreach (self::$activeRoute['file'] as $file) {
+                include $file;
+            }
+        } else {
+            include self::$activeRoute['file'];
+        }
     }
 
     /**
@@ -156,11 +178,13 @@ class Route
         if (!self::checkRoute()) {
             // Route not found in config. Generate error 404 page. Object not found.
             self::sendGeneratedPageNotFound();
+            return;
         }
 
         if (!self::checkAllow()) {
             // Route is not allowed. Generate error 403 page. Forbidden.
             self::sendGeneratedPageForbidden();
+            return;
         }
 
         if (!self::checkFileExists()) {
@@ -190,24 +214,40 @@ class Route
      * Generate page 'Error 403. Forbidden'
      *
      * @since 0.3
+     * @throws \Exception
      */
     protected static function sendGeneratedPageForbidden()
     {
         http_response_code(403);
-        echo self::getGeneratedPageContent(self::FORBIDDEN, self::FORBIDDEN_DESCRIPTION);
-        exit;
+        if (!isset(self::$configRoutes['Error403'])) {
+            echo self::getGeneratedPageContent(self::FORBIDDEN, self::FORBIDDEN_DESCRIPTION);
+        } else {
+            if (!FileHelper::checkExistsFile(self::$configRoutes['Error403'])) {
+                throw new \Exception('Route::Init(): No custom error 403 file exists');
+            }
+            include self::$configRoutes['Error403'];
+        }
+        return;
     }
 
     /**
      * Generate page 'Error 404. Object not found'
      *
      * @since 0.3
+     * @throws \Exception
      */
     protected static function sendGeneratedPageNotFound()
     {
         http_response_code(404);
-        echo self::getGeneratedPageContent(self::NOT_FOUND, self::NOT_FOUND_DESCRIPTION);
-        exit;
+        if (!isset(self::$configRoutes['Error404'])) {
+            echo self::getGeneratedPageContent(self::NOT_FOUND, self::NOT_FOUND_DESCRIPTION);
+        } else {
+            if (!FileHelper::checkExistsFile(self::$configRoutes['Error404'])) {
+                throw new \Exception('Route::Init(): No custom error 404 file exists');
+            }
+            include self::$configRoutes['Error404'];
+        }
+        return;
     }
 
 }

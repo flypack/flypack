@@ -210,10 +210,11 @@ class QueryPreparer extends QueryBuilder
         $buffer = [];
 
         foreach ($this->select as $row) {
-            if ($row === '*') {
-                $buffer[] = '*';
+            if (count($row) === 2) {
+                // ['func/field', 'alias']
+                $buffer[] = implode(' AS ', $row);
             } else {
-                $buffer[] = '`' . str_replace('.', '`.`', $row) . '`';
+                $buffer[] = $row[0];
             }
         }
 
@@ -298,11 +299,11 @@ class QueryPreparer extends QueryBuilder
             return $conditions[0];
         }
 
-        if (count($conditions) === 3 && in_array($conditions[2], ['=', '>', '<', '>=', '<=', '<>'])) {
+        if (count($conditions) === 3 && in_array($conditions[2], ['=', '>', '<', '>=', '<=', '<>', 'LIKE', 'NOT LIKE'])) {
             return "" . $conditions[0] . " " . $conditions[2] . " " . $this->_setPrepareParam($conditions[1]);
         }
 
-        if (count($conditions) === 3 && ArrayHelper::isArray($conditions[1]) && in_array($conditions[2], ['IN'])) {
+        if (count($conditions) === 3 && ArrayHelper::isArray($conditions[1]) && in_array($conditions[2], ['IN', 'NOT IN'])) {
             foreach ($conditions[1] as $key => $condition) {
                 $conditions[1][$key] = $this->_setPrepareParam($condition);
             }

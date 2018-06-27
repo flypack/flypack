@@ -200,4 +200,127 @@ class QueryBuilderTest extends TestCase
         ], $class->getProtectedVar('preparedParams'));
     }
 
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionInsertInvalidType()
+    {
+        $class = new _QueryMain();
+        $class->select()->insert();
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionIntoInvalidType()
+    {
+        $class = new _QueryMain();
+        $class->select()->into('table');
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionIntoInvalidTableName()
+    {
+        $class = new _QueryMain();
+        $class->insert()->into('table not valid');
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionValuesInvalidType()
+    {
+        $class = new _QueryMain();
+        $class->select()->values(['key' => 'value']);
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionValuesInvalidDataNoArray()
+    {
+        $class = new _QueryMain();
+        $class->insert()->into('table')->values(2018);
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionValuesInvalidDataInvalidArray()
+    {
+        $class = new _QueryMain();
+        $class->insert()->into('table')->values(['key' => ['value'], 'key2' => 'value2']);
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionValuesInvalidData3DArray()
+    {
+        $class = new _QueryMain();
+        $class->insert()->into('table')->values([0 => ['key' => ['value1']]]);
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionUpdateInvalidType()
+    {
+        $class = new _QueryMain();
+        $class->select()->update('table');
+    }
+
+    /**
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionUpdateInvalidTableName()
+    {
+        $class = new _QueryMain();
+        $class->update('table not valid');
+    }
+
+    /**
+     * @param array $set
+     *
+     * @dataProvider dataProviderExceptionSetInvalidData
+     * @expectedException \Exception
+     *
+     * @throws \Exception
+     */
+    public function testExceptionSetInvalidData($set)
+    {
+        $class = new _QueryMain();
+        $class->update('table')->set($set);
+    }
+
+    public function dataProviderExceptionSetInvalidData()
+    {
+        return [
+            [true],
+            [500100],
+            ['key'],
+            [['key' => 123]],
+            [['field', 'value', 'incorrectvalue']]
+        ];
+    }
 }
