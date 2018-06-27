@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v0.4 (June 27, 2018)
 - Add SQL counter to `fly\Database`.
 - Add function support in select part to Query Builder.
 - Add 'NOT IN', 'LIKE', 'NOT LIKE' support to Query Builder.
