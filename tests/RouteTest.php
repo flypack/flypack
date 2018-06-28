@@ -153,14 +153,14 @@ class RouteTest extends TestCase
      */
     public function dataProviderInit()
     {
-        return array(
-            array('helloworld', 'INCLUDE ONE - _NO_VAR_ONE_'),
-            array('page', 'INCLUDE TWO - reg2_NO_VAR_TWO_'),
-            array('p300', 'INCLUDE ONE - reg3vars'),
-            array('test550', 'INCLUDE TWO - reg4test550'),
-            array('string-HGFDS', 'INCLUDE TWO - reg5.1H-G-F-D-S'),
-            array('string-HGFDSZXCVBQWERT', 'INCLUDE TWO - reg5.2H-G-F-D-S-Z-X-C-V-B-Q-W-E-R-T'),
-        );
+        return [
+            ['helloworld', 'INCLUDE ONE - _NO_VAR_ONE_'],
+            ['page', 'INCLUDE TWO - reg2_NO_VAR_TWO_'],
+            ['p300', 'INCLUDE ONE - reg3vars'],
+            ['test550', 'INCLUDE TWO - reg4test550'],
+            ['string-HGFDS', 'INCLUDE TWO - reg5.1H-G-F-D-S'],
+            ['string-HGFDSZXCVBQWERT', 'INCLUDE TWO - reg5.2H-G-F-D-S-Z-X-C-V-B-Q-W-E-R-T'],
+        ];
     }
 
     /**
@@ -181,13 +181,13 @@ class RouteTest extends TestCase
      */
     public function dataProviderInitMultiFile()
     {
-        return array(
-            array('test-multi-one', 'INCLUDE ONE - _NO_VAR_ONE_'),
-            array('test-multi-two', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'),
-            array('test-multi-three', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'),
-            array('test-multi-two-with-vars', 'INCLUDE ONE - reg7INCLUDE TWO - reg7_NO_VAR_TWO_'),
-            array('test-multi-two-with-vars-725', 'INCLUDE ONE - reg8INCLUDE TWO - reg8725'),
-        );
+        return [
+            ['test-multi-one', 'INCLUDE ONE - _NO_VAR_ONE_'],
+            ['test-multi-two', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'],
+            ['test-multi-three', 'INCLUDE ONE - _NO_VAR_ONE_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_INCLUDE TWO - _NO_VAR_ONE__NO_VAR_TWO_'],
+            ['test-multi-two-with-vars', 'INCLUDE ONE - reg7INCLUDE TWO - reg7_NO_VAR_TWO_'],
+            ['test-multi-two-with-vars-725', 'INCLUDE ONE - reg8INCLUDE TWO - reg8725'],
+        ];
     }
 
     /**
