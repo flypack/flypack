@@ -112,7 +112,7 @@ class QueryValidator extends QueryChecker
             return FALSE;
         }
 
-        return FALSE;
+        return TRUE;
     }
 
 }
