@@ -36,6 +36,16 @@ class Database
     private static $count = 0;
 
     /**
+     * @var bool Default value for query cache status
+     */
+    private static $cache = FALSE;
+
+    /**
+     * @var array Storage var for query cache data
+     */
+    public static $cacheStorage = [];
+
+    /**
      * Validate database connection type
      *
      * @param string $type
@@ -282,6 +292,11 @@ class Database
         return $result;
     }
 
+    /**
+     * @since  0.4
+     *
+     * @return int
+     */
     public static function getCount()
     {
         return self::$count;
@@ -290,6 +305,62 @@ class Database
     public static function Query()
     {
         return new QueryMain();
+    }
+
+    /**
+     * @since  0.4
+     * @return bool
+     */
+    public static function getCacheDefault()
+    {
+        return self::$cache;
+    }
+
+    /**
+     * Set default cache status
+     *
+     * @param bool $cache
+     *
+     * @since  0.4
+     * @return bool
+     * @throws \Exception
+     */
+    public static function setCacheDefault($cache)
+    {
+        if (!is_bool($cache)) {
+            // cache status must be a bool value
+            throw new \Exception('fly\Database: Expects parameter 1 to be a valid default cache status');
+        }
+
+        // set default cache status
+        self::$cache = $cache;
+
+        // return actual status
+        return self::getCacheDefault();
+    }
+
+    /**
+     * Set default cache status to TRUE
+     *
+     * @since  0.4
+     * @return bool
+     * @throws \Exception
+     */
+    public static function setCacheDefaultTrue()
+    {
+        return self::setCacheDefault(TRUE);
+    }
+
+    /**
+     * Set default cache status to FALSE
+     *
+     * @since  0.4
+     * @return bool
+     * @throws \Exception
+     */
+    public static function setCacheDefaultFalse()
+    {
+        return self::setCacheDefault(FALSE);
     }
 
 }

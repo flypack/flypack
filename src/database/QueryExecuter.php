@@ -14,7 +14,7 @@ namespace fly\database;
 
 use fly\Database;
 
-class QueryExecuter extends QueryPreparer
+class QueryExecuter extends QueryCacher
 {
 
     /**
@@ -26,7 +26,22 @@ class QueryExecuter extends QueryPreparer
     protected function execute()
     {
         if ($this->_checkQueryTypeAssigned('SELECT')) {
-            $this->_executeSelect()->_executeRelations();
+            if ($this->getCacheStatus()) {
+                // cache is on
+                $data = $this->getExecutedCachedData();
+
+                if ($data !== FALSE) {
+                    // found data
+                    $this->executed['main'] = $data;
+                } else {
+                    // data not found, execute and cache
+                    $this->_executeSelect()->_executeRelations();
+                    $this->cacheExecutedData($this->executed['main']);
+                }
+            } else {
+                // cache is off, execute only
+                $this->_executeSelect()->_executeRelations();
+            }
         }
 
         if ($this->_checkQueryTypeAssigned('INSERT-VALUES')) {
