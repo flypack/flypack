@@ -302,6 +302,18 @@ class Database
         return self::$count;
     }
 
+    /**
+     * Return last insert id
+     *
+     * @since 0.5
+     *
+     * @return string
+     */
+    public static function getLastInsertId()
+    {
+        return Connection::getConnection()->lastInsertId();
+    }
+
     public static function Query()
     {
         return new QueryMain();

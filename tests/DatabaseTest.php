@@ -637,6 +637,42 @@ class DatabaseTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testLastInsertId()
+    {
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                'Name' => 'Krasnoyarsk',
+                'CountryCode' => 'RUS',
+                'Population' => 1082933,
+            ])
+            ->run();
+        $result = Database::getLastInsertId();
+        $this->assertEquals(20, $result);
+
+
+        Database::Query()
+            ->insert()
+            ->into('city')
+            ->values([
+                [
+                    'Name' => 'Voronezh',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1039801,
+                ], [
+                    'Name' => 'Volgograd',
+                    'CountryCode' => 'RUS',
+                    'Population' => 1015586,
+                ]])
+            ->run();
+        $result = Database::getLastInsertId();
+        $this->assertEquals(22, $result);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testSqlUpdate()
     {
         $result = Database::SQL("UPDATE `city` SET `Population` = ? WHERE `Name` IN (?, ?) LIMIT 2;", [100000, 'Perm', 'Rostov-on-Don']);

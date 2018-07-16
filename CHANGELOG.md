@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## UNRELEASED
+- Add `getLastInsertId()` method to `fly\Database`.
+
 ## v0.4 (June 27, 2018)
 - Add SQL counter to `fly\Database`.
 - Add query cache to `fly\Database`.
