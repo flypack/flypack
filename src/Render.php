@@ -24,12 +24,20 @@ class Render
      * @param array  $variables
      *
      * @return bool
+     * @throws \Exception
      */
     public static function View($name, $variables = [])
     {
         return self::Rend($name, $variables);
     }
 
+    /**
+     * @param string $__RENDER_NAME
+     * @param array  $__RENDER_VARIABLES
+     *
+     * @return bool
+     * @throws \Exception
+     */
     private static function Rend($__RENDER_NAME, $__RENDER_VARIABLES = [])
     {
         // vars
@@ -46,9 +54,8 @@ class Render
             include $__RENDER_FILE;
             return TRUE;
         }
-        // TODO: add throw if else
 
-        return FALSE;
+        throw new \Exception('Render: No view file exists');
     }
 
 }
